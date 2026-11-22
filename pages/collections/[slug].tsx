@@ -1,0 +1,74 @@
+import Head from 'next/head';
+import Link from 'next/link';
+import { GetStaticPaths, GetStaticProps } from 'next';
+import { Header, Footer, ProductCard } from '../../components/Site';
+import { categories, products } from '../../lib/catalog';
+export const getStaticPaths: GetStaticPaths = async () => ({
+  paths: categories.map(c => ({ params: { slug: c.slug } })),
+  fallback: false,
+});
+export const getStaticProps: GetStaticProps = async ({ params }) => ({
+  props: { slug: params?.slug },
+});
+export default function Category({ slug }: { slug: string }) {
+  const c = categories.find(x => x.slug === slug)!;
+  const list = products.filter(p => p.kind === slug);
+  return (
+    <>
+      <Head>
+        <title>{c.name} in Warri, Nigeria | RUFES Strategic Ventures</title>
+        <link rel="canonical" href={'https://rufes-strategic-ventures-by5dpa.v2.appdeploy.ai/collections/' + c.slug + '/'} />
+        <meta property="og:title" content={c.name + ' in Warri | RUFES Strategic Ventures'} />
+        <meta property="og:description" content={c.description + '. Explore RUFES catalogue and enquire about current products in Warri.'} />
+        <meta
+          name="description"
+          content={
+            'Explore ' +
+            c.name.toLowerCase() +
+            ' in Warri, Delta State. Browse RUFES catalogue examples and enquire about current products, prices and availability.'
+          }
+        />
+      </Head>
+      <Header />
+      <main className="wrap">
+        <div className="crumb">
+          <Link href="/">Home</Link> /{' '}
+          <Link href="/collections">Collections</Link> / {c.name}
+        </div>
+        <h1>{c.name} in Warri</h1>
+        <p>
+          {c.description}. Explore our selection and contact RUFES Strategic
+          Ventures to confirm products currently available at our Airport Road
+          showroom.
+        </p>
+        {list.length ? (
+          <div className="grid">
+            {list.map(p => (
+              <ProductCard key={p.slug} p={p} />
+            ))}
+          </div>
+        ) : (
+          <div className="empty">
+            Our online catalogue for this department is being prepared. Please
+            contact the showroom to ask about current products.
+          </div>
+        )}
+        <h2>Explore {c.name.toLowerCase()} in Warri</h2>
+        <p>RUFES Strategic Ventures helps customers explore {c.name.toLowerCase()} for homes, businesses and other spaces. The catalogue is illustrative; request real product photographs and confirm exact sizes, colours, materials, installation requirements and stock with the showroom before ordering.</p>
+        <h3>What to consider when choosing</h3>
+        <p>Start with the intended use, the available space, practical maintenance and your preferred style. Check dimensions and suitability for the installation location. For equipment and electrical items, request model-specific technical details and qualified installation guidance.</p>
+        <h2>Shopping for {c.name.toLowerCase()} in Warri?</h2>
+        <p>
+          Visit our Warri showroom or send an enquiry for product photographs,
+          dimensions, pricing and availability. Product details are confirmed by
+          our team.
+        </p>
+        <p><Link href="/services">Explore installation and delivery services →</Link> · <Link href="/blog">Read buying guides →</Link></p>
+        <Link className="btn" href="/contact">
+          Contact RUFES →
+        </Link>
+      </main>
+      <Footer />
+    </>
+  );
+}
