@@ -1,0 +1,25 @@
+name: Validate RUFES website
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+      - name: Build static site and sitemap
+        run: npm run build
+      - name: Verify sitemap and exported pages
+        run: |
+          test -f public/sitemap.xml
+          test -f out/index.html
+          test -f out/products/modern-led-ring-chandelier/index.html
