@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://rufes-strategic-ventures-by5dpa.v2.appdeploy.ai/sitemap.xml
