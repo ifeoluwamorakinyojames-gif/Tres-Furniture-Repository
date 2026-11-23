@@ -2,7 +2,7 @@ import type { AppProps } from 'next/app';
 import Head from 'next/head';
 import '../styles/global.css';
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://rufes-strategic-ventures-by5dpa.v2.appdeploy.ai';
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://rufes-home-and-lifestyle.pages.dev';
 const business = {
   '@context': 'https://schema.org',
   '@type': 'Store',
