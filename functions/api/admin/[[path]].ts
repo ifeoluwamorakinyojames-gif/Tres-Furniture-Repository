@@ -61,9 +61,11 @@ async function handler(ctx:Context):Promise<Response> {
     if(table==='products'){
       const slug=cleanText(data.slug,100).toLowerCase();
       if(!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) return respond({error:'Slug must use lowercase letters, numbers and hyphens'},400);
-      const values=[slug,name,cleanText(data.category,100),cleanText(data.description,4000),imageKey,cleanText(data.image_alt,200),published,sortOrder];
-      if(ctx.request.method==='POST') await ctx.env.DB.prepare('INSERT INTO products(id,slug,name,category,description,image_key,image_alt,published,sort_order) VALUES(?,?,?,?,?,?,?,?,?)').bind(recordId,...values).run();
-      else await ctx.env.DB.prepare('UPDATE products SET slug=?,name=?,category=?,description=?,image_key=?,image_alt=?,published=?,sort_order=?,updated_at=CURRENT_TIMESTAMP WHERE id=?').bind(...values,recordId).run();
+      const seoTitle=cleanText(data.seo_title,140),metaDescription=cleanText(data.meta_description,300),primaryKeyword=cleanText(data.primary_keyword,140),specifications=cleanText(data.specifications,6000),brand=cleanText(data.brand,140),imageCaption=cleanText(data.image_caption,200),indexable=data.indexable===false||data.indexable===0?0:1;
+      if(published&&(!cleanText(data.description,4000)||!seoTitle||!metaDescription||!imageKey||!cleanText(data.image_alt,200)))return respond({error:'Publishing requires description, SEO title, meta description, uploaded image and alt text'},400);
+      const values=[slug,name,cleanText(data.category,100),cleanText(data.description,4000),imageKey,cleanText(data.image_alt,200),published,sortOrder,seoTitle,metaDescription,primaryKeyword,specifications,brand,imageCaption,indexable];
+      if(ctx.request.method==='POST') await ctx.env.DB.prepare('INSERT INTO products(id,slug,name,category,description,image_key,image_alt,published,sort_order,seo_title,meta_description,primary_keyword,specifications,brand,image_caption,indexable) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)').bind(recordId,...values).run();
+      else await ctx.env.DB.prepare('UPDATE products SET slug=?,name=?,category=?,description=?,image_key=?,image_alt=?,published=?,sort_order=?,seo_title=?,meta_description=?,primary_keyword=?,specifications=?,brand=?,image_caption=?,indexable=?,updated_at=CURRENT_TIMESTAMP WHERE id=?').bind(...values,recordId).run();
     }else{
       const href=cleanText(data.href,150)||'/collections';
       if(!isSafePath(href))return respond({error:'Only internal links are allowed'},400);
