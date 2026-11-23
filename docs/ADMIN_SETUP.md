@@ -1,35 +1,27 @@
-# RUFES admin setup — Cloudflare architecture
+# RUFES Cloudflare admin setup
 
-## Current status
-- `/admin/` is a **publicly accessible UI preview**, not a secure admin system.
-- It deliberately does not display real customer data, accept credentials, upload files or edit products.
-- The existing storefront is a static Next.js export. A static page alone cannot securely authenticate administrators or write to a database.
-- Do not add client-side-only password checks or place API tokens in `NEXT_PUBLIC_*` variables.
+## Implemented in GitHub
+- `/admin/` product editor, homepage banner editor and media uploader.
+- Cloudflare Pages Functions at `/api/admin/*` (protected by validated Cloudflare Access JWT).
+- `/api/content` serves published D1 products and slides.
+- `/api/media/<key>` serves R2 images.
+- Homepage hero and featured product section fetch published data, falling back to original static content until database items exist.
+- No prices or checkout.
 
-## Planned backend
-1. **Cloudflare Access**: protect `/admin/*` and admin API routes using an authenticated identity policy. For a Pages static site, configure Access on the actual hostname and route patterns; confirm coverage of both `/admin` and `/admin/`.
-2. **Cloudflare Workers**: server-side API for products, collections, homepage slides, enquiries, media, staff roles and audit history. Validate Access JWTs server-side, enforce authorization per endpoint, check inputs and apply rate limits.
-3. **Cloudflare D1**: products, product variants/specifications, collections, homepage banners, enquiries, users/roles, and audit logs. Use parameterized queries and migrations.
-4. **Cloudflare R2**: uploaded product photos and slideshow images. Restrict write operations to authorized Workers; validate content type, size and file signatures. Use optimized image variants, descriptive alt text and appropriate cache headers.
-5. **Storefront publishing**: decide between a public read API (client-side published-product fetching) or a deploy-triggered static build for indexable product pages. For SEO, preserve server-generated HTML and sitemaps for published products.
+## Required Cloudflare setup (not yet performed)
+1. Deploy this repository to Cloudflare **Pages**, keeping `npm run build` and output `out`. Pages Functions in the repository's `functions/` folder must be included in the Pages deployment. Ensure build install includes dependencies.
+2. Create a D1 database and apply `migrations/0001_admin.sql` using the Cloudflare dashboard SQL console or Wrangler.
+3. Create an R2 bucket.
+4. In Pages project > Settings > Functions > Bindings, bind D1 as `DB` and R2 as `MEDIA`, for production and preview environments as needed. Redeploy after adding bindings.
+5. Set Pages environment variables `ACCESS_TEAM_DOMAIN` (e.g. `https://your-team.cloudflareaccess.com`) and `ACCESS_AUD` (Cloudflare Access application audience tag).
+6. Create a Cloudflare Access self-hosted application protecting **/admin**, **/admin/**, **/admin/*** and **/api/admin/***. Restrict access to verified owner/staff identities. Test all path variants; do not assume a wildcard covers the bare path. The API independently validates the signed Access JWT, and rejects requests when not configured.
+7. Check that unauthenticated requests to `/api/admin/products` return 401/403, then sign in through Access and verify add/edit/publish/upload. Never share Access credentials or service tokens in frontend code.
+8. For a custom domain, configure `NEXT_PUBLIC_SITE_URL` to its canonical https URL and rebuild.
 
-## Proposed admin sections
-- Overview
-- Products: create, edit, archive, publish, photos, alt text and specifications
-- Collections
-- Homepage banners: ordering, captions and image upload
-- Quotations: contact details, product reference and follow-up status
-- Media library
-- Pages, services and articles
-- Settings and staff
-
-## Before production use
-- Confirm Cloudflare account ownership, domain and Access policies.
-- Deploy D1 migrations and Worker routes.
-- Implement owner/staff permissions on the Worker, not only the UI.
-- Connect the admin frontend to the authenticated Worker API.
-- Verify denied unauthenticated requests and forbidden staff operations.
-- Verify image upload security, quotation privacy, backup/restore and logs.
-- Test the complete Cloudflare deployment and mobile admin interface.
-
-The older Supabase schema is historical scaffolding only. **Do not use Supabase for this project.**
+## Current limitations and production hardening
+- New D1 products appear in the homepage featured grid, but **individual SEO-indexable product pages and collection pages are still generated from `lib/catalog.ts`**. A deploy-time content sync or server-rendered architecture is required to make new products fully indexable.
+- The original category images, editorial sections, journal and service imagery remain static; they are not yet editable from admin.
+- Uploaded images are stored without resizing; optimize on the client or add Cloudflare Images/Workers image processing before large-scale use.
+- Admin supports products, banners and images only. Quotations, staff roles, audit history, article editing and media deletion are not implemented.
+- The static admin HTML is not a security boundary; protect routes in Cloudflare Access. D1 and R2 data operations require validated Access JWT.
+- Test Pages Functions compatibility, migrations, deployment, access policies and all CRUD flows before treating this as live. No Cloudflare resources were created or deployed by the GitHub commits.
