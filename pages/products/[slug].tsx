@@ -2,7 +2,7 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { GetStaticPaths, GetStaticProps } from 'next';
 import { Header, Footer, ImageCard } from '../../components/Site';
-import { products, categories, photos } from '../../lib/catalog';
+import { products, photos } from '../../lib/catalog';
 export const getStaticPaths: GetStaticPaths = async () => ({
   paths: products.map(p => ({ params: { slug: p.slug } })),
   fallback: false,
@@ -12,6 +12,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => ({
 });
 export default function Product({ slug }: { slug: string }) {
   const p = products.find(x => x.slug === slug)!;
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://rufes-home-and-lifestyle.pages.dev';
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Product',
@@ -19,7 +20,7 @@ export default function Product({ slug }: { slug: string }) {
     description: p.description,
     category: p.category,
     image: photos[p.kind],
-    url: 'https://rufes-strategic-ventures-by5dpa.v2.appdeploy.ai/products/' + p.slug + '/',
+    url: siteUrl + '/products/' + p.slug + '/',
     seller: { '@type': 'Organization', name: 'RUFES Strategic Ventures' },
     brand: { '@type': 'Brand', name: 'RUFES Strategic Ventures' },
   };
@@ -67,8 +68,8 @@ export default function Product({ slug }: { slug: string }) {
             <p>
               <strong>Availability:</strong> Please confirm
             </p>
-            <Link className="btn" href="/contact">
-              Enquire about this item →
+            <Link className="btn" href={{ pathname: '/contact', query: { product: p.name } }}>
+              Request a quotation →
             </Link>
           </div>
         </div>
