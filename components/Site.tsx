@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { products, categories, photos } from '../lib/catalog';
+import { useSiteImages } from './useSiteImages';
 export function Header() {
   return (
     <header>
@@ -41,7 +42,8 @@ export function Footer() {
   );
 }
 export function ImageCard({ kind, alt }: { kind: string; alt: string }) {
-  return <img src={photos[kind] || photos.decor} alt={alt} loading="lazy" />;
+  const image = useSiteImages()('category:' + kind, photos[kind] || photos.decor);
+  return <img src={image.src} alt={image.alt || alt} loading="lazy" />;
 }
 export function ProductCard({ p }: { p: (typeof products)[number] }) {
   return (
