@@ -178,3 +178,32 @@ main>.wrap+ .wrap{padding-top:30px}
 .rufesSlider button:focus-visible,.rufesSlider a:focus-visible{outline:3px solid #f3c889;outline-offset:3px}
 @media(max-width:650px){.rufesSlider{height:500px}.rufesSlide{background-position:60% center}.rufesSlideInner{padding:35px 20px 90px}.rufesSlide h1,.rufesSlide h2{font-size:43px}.rufesSlide p{font-size:14px;line-height:1.6}.rufesSliderControls{bottom:20px}.rufesSliderPause{right:12px;bottom:18px;font-size:11px}}
 @media(prefers-reduced-motion:reduce){.rufesSlide{transition:none}}
+
+
+/* RUFES polished interactions: light, purposeful and accessible */
+html{scroll-behavior:smooth}
+body{overflow-x:hidden}
+header{box-shadow:0 3px 24px rgba(30,19,16,.07)}
+.nav{max-width:1320px}
+.links a{position:relative;text-decoration:none!important;transition:color .2s ease}
+.links a:after{content:"";position:absolute;left:0;right:100%;bottom:-5px;height:2px;background:#a77a54;transition:right .25s ease}
+.links a:hover:after,.links a:focus-visible:after{right:0}
+.btn,.outlineBtn{transition:background-color .25s ease,transform .25s ease,box-shadow .25s ease}
+.btn:hover,.outlineBtn:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(40,21,19,.18)}
+a:focus-visible,button:focus-visible{outline:3px solid #bf9161;outline-offset:3px}
+.rufesSlide.isActive .rufesSlideInner{animation:rufesHeroEnter .8s ease-out both}
+@keyframes rufesHeroEnter{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.rufesReveal{opacity:0;transform:translateY(22px);transition:opacity .65s ease,transform .65s cubic-bezier(.2,.75,.3,1)}
+.rufesReveal.rufesVisible{opacity:1;transform:translateY(0)}
+.homeMain .product,.homeMain .tile,.homeMain .journalCard,.homeMain .serviceTile,.homeMain .editorialCard{transition:transform .3s ease,box-shadow .3s ease,border-color .3s ease,opacity .65s ease}
+.homeMain .product:hover,.homeMain .journalCard:hover,.homeMain .tile:hover,.homeMain .editorialCard:hover{transform:translateY(-5px);box-shadow:0 15px 35px rgba(45,26,20,.14)}
+.homeMain .serviceTile:hover{transform:translateY(-4px);box-shadow:0 13px 30px rgba(45,26,20,.12)}
+.homeMain .product img,.homeMain .journalCard img,.homeMain .tile img{transition:transform .45s ease}
+.homeMain .product:hover img,.homeMain .journalCard:hover img{transform:scale(1.035)}
+.homeMain .product>a,.homeMain .journalCard{overflow:hidden}
+.homeMain .categoryGrid .tile:hover img{transform:scale(1.04)}
+.sectionTitle>a{transition:color .2s ease,transform .2s ease}
+.sectionTitle>a:hover{color:#9a6345;transform:translateX(3px)}
+@media(max-width:900px){.nav{gap:12px}.links{row-gap:12px}}
+@media(max-width:650px){.rufesReveal{transform:translateY(12px)}.homeMain .product:hover,.homeMain .journalCard:hover,.homeMain .tile:hover{transform:none}.nav{padding:12px 16px}.links{gap:12px;row-gap:9px}.links a{padding:4px 0}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}.rufesReveal{opacity:1;transform:none}}
