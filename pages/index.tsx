@@ -4,6 +4,7 @@ import { Header, Footer, CategoryCard, ProductCard } from '../components/Site';
 import { categories, products, photos } from '../lib/catalog';
 import { services, articles } from '../lib/content';
 import HomeHeroSlider from '../components/HomeHeroSlider';
+import FeaturedProducts from '../components/FeaturedProducts';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://rufes-home-and-lifestyle.pages.dev';
 
@@ -40,7 +41,7 @@ export default function Home() {
       <section className="wrap">
         <div className="sectionTitle"><div><span className="sectionKicker">THE RUFES EDIT</span><h2>Featured product inspiration</h2></div><Link href="/collections">View all →</Link></div>
         <p className="muted">Illustrative catalogue images. Contact the showroom to confirm actual models, prices and stock.</p>
-        <div className="grid">{products.slice(0,8).map(p=><ProductCard key={p.slug} p={p}/>)}</div>
+        <FeaturedProducts />
       </section>
       <section className="widePromo"><div className="widePromoImage" style={{backgroundImage:'url(' + photos.lighting + ')'}}/><div className="widePromoCopy"><span className="sectionKicker">THE LIGHTING COLLECTION</span><h2>Make a statement with light.</h2><p>From contemporary chandeliers to warm decorative lighting, explore ideas for memorable interiors.</p><Link className="btn" href="/collections/lighting">Explore lighting →</Link></div></section>
       <section className="wrap">
