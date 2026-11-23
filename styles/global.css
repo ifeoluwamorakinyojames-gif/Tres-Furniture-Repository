@@ -74,3 +74,68 @@ header{background:#fff;color:#332b2a}
 .btn{background:#86152e;color:#fff}.btn:hover{background:#651022}
 .sectionKicker,.showcaseKicker{color:#c59a57}.visitBanner{background:#62152b}
 @media(max-width:750px){.brandLogo{font-size:20px;letter-spacing:2px}.brandLogo img{width:46px;height:46px}.brandLogo small{font-size:7px}.nav{padding:12px 16px}.links{justify-content:center}}
+
+
+/* RUFES Home & Lifestyle — compact premium showroom theme (2026) */
+:root{--wine:#722b32;--cream:#f6f1e9;--ink:#282522;--gold:#c49a61;--line:#e9dfd2}
+html{scroll-behavior:smooth}
+body{background:var(--cream);color:var(--ink)}
+header{background:rgba(255,252,247,.97);border-bottom:1px solid var(--line);backdrop-filter:blur(12px);box-shadow:0 5px 22px #27140c0b}
+.nav{max-width:1360px;padding:12px 24px}
+.links{gap:18px}
+.links a{font-size:12px;font-weight:700;letter-spacing:.025em;transition:color .2s}
+.links a:hover{color:var(--wine)}
+.brandLogo{font-size:23px}
+.brandLogo img{width:52px;height:52px}
+.wrap{max-width:1320px;min-height:0;padding:35px 24px}
+main>.wrap{padding-top:38px;padding-bottom:32px}
+main>.wrap+ .wrap{padding-top:30px}
+.sectionTitle{margin-bottom:20px;align-items:end}
+.sectionTitle h2{font-size:clamp(27px,3.2vw,39px);line-height:1.16;margin:6px 0 0}
+.sectionKicker{font-size:10px;letter-spacing:2.4px}
+.showcaseHero{min-height:520px;background:linear-gradient(90deg,rgba(28,17,14,.87) 0%,rgba(28,17,14,.56) 49%,rgba(28,17,14,.08) 100%),url('https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=1800&q=85') center/cover}
+.showcaseHeroInner{max-width:1320px;padding:60px 24px}
+.showcaseHero h1{font-size:clamp(45px,6vw,76px);margin:14px 0;line-height:1.06}
+.showcaseHero p{font-size:16px;line-height:1.65}
+.heroActions{margin-top:24px}
+.btn{background:var(--wine);border-radius:5px;transition:transform .2s,background .2s}
+.btn:hover{background:#572026;transform:translateY(-2px)}
+.outlineBtn{border-radius:5px}
+.promiseBar{background:#e9dfd0;border-bottom:1px solid #d9c8b4;padding:13px 20px;font-weight:700}
+.categoryGrid{gap:14px}
+.categoryGrid .tile{background:#fffaf4;border:1px solid #eee3d7;border-radius:12px;padding:14px 10px 9px;box-shadow:0 6px 20px #38271b08;transition:transform .2s,box-shadow .2s}
+.categoryGrid .tile:hover,.product:hover,.journalCard:hover{transform:translateY(-4px);box-shadow:0 12px 30px #38271b18}
+.categoryGrid .tile img{width:130px;height:130px;border-radius:9px}
+.categoryGrid .tile div{padding:10px 4px 4px}
+.categoryGrid .tile strong{font-size:13px;line-height:1.4}
+.categoryGrid .tile .muted{font-size:11px}
+.editorialWrap{padding-top:30px}
+.editorialGrid{gap:14px}
+.editorialCard{min-height:290px;border-radius:10px;transition:transform .2s}
+.editorialCard:hover{transform:translateY(-4px)}
+.editorialCard>div{padding:22px}
+.editorialCard h3{font-size:25px}
+.grid{gap:14px}
+.product{border:1px solid #eee4d8;border-radius:9px;transition:transform .2s,box-shadow .2s}
+.product img{height:205px}
+.product .details{padding:15px}
+.product h3{font-size:18px}
+.widePromo{margin:25px auto;min-height:320px;max-width:1370px;border-radius:10px;overflow:hidden}
+.widePromoImage{min-height:320px}
+.widePromoCopy{padding:35px clamp(24px,4vw,60px)}
+.widePromoCopy h2{font-size:clamp(30px,3.7vw,47px)}
+.serviceGrid{gap:13px}
+.serviceTile{border-radius:9px;padding:22px;background:#fffaf5;transition:transform .2s,border-color .2s}
+.serviceTile:hover{transform:translateY(-3px);border-color:var(--gold)}
+.serviceTile h3{font-size:20px;margin:9px 0}
+.serviceTile p{line-height:1.55}
+.journalGrid{gap:14px}
+.journalCard{border-radius:9px;overflow:hidden;transition:transform .2s,box-shadow .2s}
+.journalCard img{height:190px}
+.journalCard>div{padding:18px}
+.journalCard h3{font-size:21px}
+.visitBanner{padding:34px 38px;border-radius:10px;background:linear-gradient(115deg,#52242d,#7e3a42)}
+.visitBanner h2{font-size:32px}
+.footer{margin-top:20px}
+@media(max-width:900px){.nav{flex-wrap:wrap}.links{justify-content:center}.categoryGrid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:650px){.wrap,main>.wrap,main>.wrap+.wrap{padding:26px 16px}.showcaseHero{min-height:445px;background-position:58% center}.showcaseHeroInner{padding:45px 20px}.showcaseHero h1{font-size:43px}.showcaseHero p{font-size:14px}.promiseBar{padding:12px;gap:8px;font-size:10px}.categoryGrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.categoryGrid .tile{padding:10px 7px}.categoryGrid .tile img{width:100%;height:120px}.editorialGrid,.serviceGrid,.journalGrid,.widePromo{grid-template-columns:1fr}.editorialCard{min-height:245px}.product img{height:155px}.widePromo{margin:15px 16px}.widePromoImage{min-height:230px}.widePromoCopy{padding:26px}.visitBanner{padding:26px}.visitBanner h2{font-size:28px}.nav{padding:10px 16px}.links{gap:11px}.links a{font-size:11px}.brandLogo img{width:44px;height:44px}}
