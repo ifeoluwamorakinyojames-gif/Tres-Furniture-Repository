@@ -11,13 +11,14 @@ export const getStaticProps: GetStaticProps = async ({ params }) => ({
   props: { slug: params?.slug },
 });
 export default function Category({ slug }: { slug: string }) {
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://rufes-home-and-lifestyle.pages.dev';
   const c = categories.find(x => x.slug === slug)!;
   const list = products.filter(p => p.kind === slug);
   return (
     <>
       <Head>
         <title>{c.name} in Warri, Nigeria | RUFES Strategic Ventures</title>
-        <link rel="canonical" href={'https://rufes-strategic-ventures-by5dpa.v2.appdeploy.ai/collections/' + c.slug + '/'} />
+        <link rel="canonical" href={siteUrl + '/collections/' + c.slug + '/'} />
         <meta property="og:title" content={c.name + ' in Warri | RUFES Strategic Ventures'} />
         <meta property="og:description" content={c.description + '. Explore RUFES catalogue and enquire about current products in Warri.'} />
         <meta
