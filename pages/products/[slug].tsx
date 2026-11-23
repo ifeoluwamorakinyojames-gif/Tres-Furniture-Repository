@@ -28,7 +28,7 @@ export default function Product({ slug }: { slug: string }) {
     <>
       <Head>
         <title>{p.name} in Warri, Nigeria | RUFES Strategic Ventures</title>
-        <link rel="canonical" href={'https://rufes-strategic-ventures-by5dpa.v2.appdeploy.ai/products/' + p.slug + '/'} />
+        <link rel="canonical" href={siteUrl + '/products/' + p.slug + '/'} />
         <meta property="og:type" content="product" />
         <meta property="og:title" content={p.name + ' in Warri | RUFES'} />
         <meta property="og:description" content={p.description} />
