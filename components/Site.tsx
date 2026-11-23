@@ -55,8 +55,8 @@ export function ProductCard({ p }: { p: (typeof products)[number] }) {
       <div className="details">
         <span className="muted">{p.category}</span>
         <h3>{p.name}</h3>
-        <p className="muted">Enquire for specifications and availability.</p>
-        <Link href={'/products/' + p.slug}>View details →</Link>
+        <p className="muted">Request a quote for current options and availability.</p>
+        <Link href={'/products/' + p.slug}>View product →</Link>
       </div>
     </article>
   );
