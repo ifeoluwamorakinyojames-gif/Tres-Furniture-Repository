@@ -139,3 +139,23 @@ main>.wrap+ .wrap{padding-top:30px}
 .footer{margin-top:20px}
 @media(max-width:900px){.nav{flex-wrap:wrap}.links{justify-content:center}.categoryGrid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:650px){.wrap,main>.wrap,main>.wrap+.wrap{padding:26px 16px}.showcaseHero{min-height:445px;background-position:58% center}.showcaseHeroInner{padding:45px 20px}.showcaseHero h1{font-size:43px}.showcaseHero p{font-size:14px}.promiseBar{padding:12px;gap:8px;font-size:10px}.categoryGrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.categoryGrid .tile{padding:10px 7px}.categoryGrid .tile img{width:100%;height:120px}.editorialGrid,.serviceGrid,.journalGrid,.widePromo{grid-template-columns:1fr}.editorialCard{min-height:245px}.product img{height:155px}.widePromo{margin:15px 16px}.widePromoImage{min-height:230px}.widePromoCopy{padding:26px}.visitBanner{padding:26px}.visitBanner h2{font-size:28px}.nav{padding:10px 16px}.links{gap:11px}.links a{font-size:11px}.brandLogo img{width:44px;height:44px}}
+
+/* Screenshot-specific layout correction: no viewport-height gaps on homepage */
+.homeMain{display:flow-root}
+.homeMain>.wrap{min-height:unset!important;height:auto!important;margin-top:0!important;margin-bottom:0!important;padding-top:34px!important;padding-bottom:24px!important}
+.homeMain>.wrap.editorialWrap{padding-top:20px!important}
+.homeMain>.wrap:last-child{padding-bottom:35px!important}
+.homeMain .categoryGrid{align-items:start;grid-auto-rows:auto;row-gap:14px}
+.homeMain .categoryGrid .tile{height:auto;min-height:0;align-self:start}
+.homeMain .categoryGrid .tile div{min-height:0}
+.homeMain .editorialGrid{align-items:stretch}
+.homeMain .serviceGrid{align-items:start;grid-auto-rows:auto}
+.homeMain .serviceTile{min-height:0;height:auto;align-self:start;display:flex;flex-direction:column;gap:8px;padding:22px 23px;background:linear-gradient(145deg,#fffaf3,#f1e8db);border:1px solid #dfcdb7;box-shadow:0 6px 18px #3920140d}
+.homeMain .serviceTile:nth-child(2n){background:linear-gradient(145deg,#f9f0e6,#f1e1d5)}
+.homeMain .serviceTile:nth-child(3n){background:linear-gradient(145deg,#f3e9dc,#e8e0d4)}
+.homeMain .serviceTile h3{margin:0;line-height:1.25}
+.homeMain .serviceTile p{margin:0;color:#51473f}
+.homeMain .serviceTile strong{margin-top:4px}
+.homeMain .sectionTitle{margin-bottom:16px}
+.homeMain .widePromo{margin-top:20px;margin-bottom:20px}
+@media(max-width:650px){.homeMain>.wrap{padding:23px 16px!important}.homeMain>.wrap.editorialWrap{padding-top:16px!important}.homeMain .serviceGrid{gap:12px}.homeMain .serviceTile{padding:19px}.homeMain .categoryGrid{row-gap:10px}}
