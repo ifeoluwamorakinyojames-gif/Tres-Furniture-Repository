@@ -277,3 +277,12 @@ a:focus-visible,button:focus-visible{outline:3px solid #bf9161;outline-offset:3p
 .adminItemRow small{color:#807068;font-size:11px;margin-top:5px}
 .adminItemRow button{border:1px solid #d9c6b9;background:white;border-radius:6px;padding:8px 10px;cursor:pointer;color:#6b4035}
 @media(max-width:760px){.adminForm{grid-template-columns:1fr}.adminItemRow{flex-wrap:wrap}.adminItemRow>div{min-width:140px}}
+
+
+.enquiryForm{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:20px 0 28px}
+.enquiryForm h2,.enquiryForm label:has(textarea),.enquiryForm button,.enquiryForm p{grid-column:1/-1}
+.enquiryForm label{display:grid;gap:7px;font-size:13px;font-weight:700;color:#59473f}
+.enquiryForm input,.enquiryForm textarea{width:100%;border:1px solid #d7c7b9;border-radius:8px;padding:12px;font:inherit;font-weight:400}
+.enquiryForm .enquiryHoneypot{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.enquiryForm button{justify-self:start}
+@media(max-width:650px){.enquiryForm{grid-template-columns:1fr}}
