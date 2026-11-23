@@ -3,8 +3,8 @@ import Link from 'next/link';
 import { ChangeEvent, FormEvent, useCallback, useEffect, useState } from 'react';
 
 type Item = Record<string, unknown> & { id: string; image_key?: string; name?: string; title?: string; published?: number; slug?: string; category?: string; description?: string; image_alt?: string };
-type Resource = 'products' | 'banners' | 'media';
-const tabs: {key:Resource;label:string}[] = [{key:'products',label:'Products'},{key:'banners',label:'Homepage slides'},{key:'media',label:'Images'}];
+type Resource = 'products' | 'banners' | 'media' | 'site-images' | 'enquiries';
+const tabs: {key:Resource;label:string}[] = [{key:'products',label:'Products'},{key:'banners',label:'Homepage slides'},{key:'media',label:'Images'},{key:'site-images',label:'Website images'},{key:'enquiries',label:'Quotations'}];
 const imageUrl = (key:unknown) => typeof key==='string' && key ? '/api/media/'+key : '';
 const initial = {name:'',slug:'',category:'',description:'',image_key:'',image_alt:'',title:'',accent:'',label:'',href:'/collections',action_label:'Explore collection',sort_order:0,published:false};
 
@@ -18,6 +18,9 @@ export default function Admin() {
   const [message,setMessage]=useState('');
   const [connected,setConnected]=useState(false);
   const [uploadAlt,setUploadAlt]=useState('');
+  const [imageSlot,setImageSlot]=useState('category:furniture');
+  const [imageKey,setImageKey]=useState('');
+  const [imageAlt,setImageAlt]=useState('');
   const [file,setFile]=useState<File|null>(null);
 
   const load=useCallback(async (resource:Resource) => {
@@ -58,6 +61,19 @@ export default function Admin() {
       await load('media');setFile(null);setUploadAlt('');setMessage('Image uploaded. You can select it when editing a product or homepage slide.');
     }catch(error){setMessage(String(error));}finally{setBusy(false);}
   };
+  const saveSiteImage=async(event:FormEvent)=>{
+    event.preventDefault();setBusy(true);setMessage('');
+    try{
+      const response=await fetch('/api/admin/site-images',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({slot:imageSlot,image_key:imageKey,alt:imageAlt})});
+      const result=await response.json();
+      if(!response.ok)throw new Error(result.error||'Unable to save');
+      await load('site-images');setMessage('Website image updated.');
+    }catch(error){setMessage(String(error));}finally{setBusy(false);}
+  };
+  const setEnquiryStatus=async(id:string,status:string)=>{
+    setBusy(true);
+    try{const response=await fetch('/api/admin/enquiries',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({id,status})});if(!response.ok)throw new Error('Unable to update enquiry');await load('enquiries');}catch(error){setMessage(String(error));}finally{setBusy(false);}
+  };
   const field=(key:keyof typeof initial,label:string,required=false)=> <label className="adminField" key={key}><span>{label}</span><input required={required} value={String(form[key])} onChange={event=>setForm(old=>({...old,[key]:event.target.value}))}/></label>;
   return <>
     <Head><title>RUFES Admin | Catalogue & Images</title><meta name="robots" content="noindex,nofollow,noarchive"/></Head>
@@ -67,7 +83,9 @@ export default function Admin() {
         <div className="adminHeading"><div><span className="adminEyebrow">SHOWROOM CONTENT MANAGEMENT</span><h1>{tabs.find(t=>t.key===tab)?.label}</h1><p>Manage the live catalogue and imagery from one workspace.</p></div><span className="adminSetupTag">{connected?'Backend connected':'Connection required'}</span></div>
         {message&&<div className="adminNotice" role="status">{message}</div>}
         {!connected&&<div className="adminNotice">The admin interface is not active until Cloudflare Access, D1, R2 and Pages Functions are configured. Do not upload private images or customer information before setup is verified.</div>}
-        {tab==='media'?<div className="adminPanel"><h2>Upload a product or banner image</h2><form onSubmit={upload} className="adminForm"><label className="adminField"><span>Image (JPG, PNG or WebP, maximum 5 MB)</span><input type="file" accept="image/jpeg,image/png,image/webp" required onChange={(e:ChangeEvent<HTMLInputElement>)=>setFile(e.target.files?.[0]||null)}/></label><label className="adminField"><span>Descriptive image alt text</span><input value={uploadAlt} onChange={e=>setUploadAlt(e.target.value)} maxLength={200} required/></label><button className="btn" disabled={!connected||busy||!file}>Upload image</button></form><div className="adminMediaGrid">{media.map(m=><div className="adminMediaItem" key={m.id}><img src={imageUrl(m.object_key)} alt={String(m.alt||'Uploaded image')}/><small>{String(m.alt||m.object_key)}</small></div>)}</div></div>:
+        {tab==='enquiries'?<div className="adminPanel"><h2>Customer quotation requests</h2><div className="adminItemList">{items.map(item=><div className="adminItemRow" key={item.id}><div><strong>{String(item.name||'Customer')} — {String(item.product||'General enquiry')}</strong><small>{String(item.email||'')} · {String(item.phone||'')} · {String(item.created_at||'')}</small><p>{String(item.message||'')}</p></div><select value={String(item.status||'new')} disabled={!connected||busy} onChange={e=>setEnquiryStatus(item.id,e.target.value)}><option value="new">New</option><option value="in_progress">In progress</option><option value="completed">Completed</option></select></div>)}{items.length===0&&<p>No enquiries yet.</p>}</div></div>:
+        tab==='site-images'?<div className="adminPanel"><h2>Assign images across the website</h2><p>Upload your image in the Images tab, then assign it to a section here.</p><form className="adminForm" onSubmit={saveSiteImage}><label className="adminField"><span>Image location</span><select value={imageSlot} onChange={e=>setImageSlot(e.target.value)}>{['furniture','lighting','decor','flowers','gym','playground','sports','christmas','textiles','toys'].map(key=><option key={key} value={'category:'+key}>Collection: {key}</option>)}{['furniture','lighting','gym'].map(key=><option key={key} value={'editorial:'+key}>Editorial: {key}</option>)}<option value="promo:lighting">Lighting promotion</option></select></label><label className="adminField"><span>Uploaded image</span><select value={imageKey} onChange={e=>setImageKey(e.target.value)} required><option value="">Choose image</option>{media.map(m=><option key={m.id} value={String(m.object_key)}>{String(m.alt||m.object_key)}</option>)}</select></label><label className="adminField"><span>Alt text</span><input value={imageAlt} onChange={e=>setImageAlt(e.target.value)} required maxLength={200}/></label><button className="btn" disabled={!connected||busy}>Save website image</button></form><div className="adminItemList">{items.map(item=><div className="adminItemRow" key={String(item.slot)}><img src={imageUrl(item.image_key)} alt={String(item.alt||'')}/><div><strong>{String(item.slot)}</strong><small>{String(item.alt||'')}</small></div><button type="button" onClick={()=>{setImageSlot(String(item.slot));setImageKey(String(item.image_key));setImageAlt(String(item.alt||''));}}>Edit</button></div>)}</div></div>:
+        tab==='media'?<div className="adminPanel"><h2>Upload a product or banner image</h2><form onSubmit={upload} className="adminForm"><label className="adminField"><span>Image (JPG, PNG or WebP, maximum 5 MB)</span><input type="file" accept="image/jpeg,image/png,image/webp" required onChange={(e:ChangeEvent<HTMLInputElement>)=>setFile(e.target.files?.[0]||null)}/></label><label className="adminField"><span>Descriptive image alt text</span><input value={uploadAlt} onChange={e=>setUploadAlt(e.target.value)} maxLength={200} required/></label><button className="btn" disabled={!connected||busy||!file}>Upload image</button></form><div className="adminMediaGrid">{media.map(m=><div className="adminMediaItem" key={m.id}><img src={imageUrl(m.object_key)} alt={String(m.alt||'Uploaded image')}/><small>{String(m.alt||m.object_key)}</small></div>)}</div></div>:
         <><div className="adminPanel"><h2>{editing?'Edit '+(tab==='products'?'product':'slide'):'Add '+(tab==='products'?'product':'homepage slide')}</h2><form onSubmit={save} className="adminForm">
           {tab==='products'?<>{field('name','Product name',true)}{field('slug','SEO slug (e.g. modern-sofa)',true)}{field('category','Collection/category',true)}</>:<>{field('title','Slide heading',true)}{field('accent','Highlighted heading')}{field('label','Small label')}{field('href','Button link (internal path)',true)}{field('action_label','Button label')}</>}
           <label className="adminField"><span>Description</span><textarea value={form.description} rows={4} onChange={e=>setForm(old=>({...old,description:e.target.value}))}/></label>
