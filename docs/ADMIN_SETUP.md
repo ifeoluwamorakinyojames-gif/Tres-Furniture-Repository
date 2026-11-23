@@ -37,3 +37,34 @@
 - Site image changes appear via client-side fetching; SEO crawlers and social cards may still see static placeholders.
 - Some original product detail, blog, services, and gallery imagery remains static and not yet fully editable.
 - This repository change does **not** configure the user's Cloudflare account or confirm deployment. Check build logs and run end-to-end tests.
+
+
+## SEO + GEO implementation (migration 0002)
+Apply `migrations/0002_seo_geo.sql` **after** `0001_admin.sql`. The original D1 schema does not contain SEO fields until this migration runs.
+
+- Admin product editor now includes SEO title, meta description, primary keyword, verified specifications, brand, image caption and indexability control. Publishing a new product requires a description, SEO title, meta description, uploaded image and image alt text.
+- `functions/products/[slug].ts` serves a **server-rendered HTML page** for published D1 products, with canonical URL, robots directive, Open Graph metadata, Product and BreadcrumbList JSON-LD, descriptive image and quotation link. It falls back to the original static page when the D1 record does not exist.
+- `functions/sitemap.xml.ts` merges the static sitemap with published, indexable D1 product URLs and modification dates. It needs to be verified on the deployed Cloudflare Pages site, including static asset fallback and caching.
+- Homepage published products link to their individual product pages, not just the contact page.
+- `business_locations` includes Lagos head office (city only; no street address asserted) and Warri showroom (previously supplied showroom address). The admin has an Office locations section and `/api/locations` exposes public business location records.
+- Global Organization JSON-LD identifies Lagos head office and Warri showroom. **Lagos street address and phone are not known and must be verified before adding them.**
+- `SITE_URL` is the optional server-side canonical origin for Cloudflare Pages Functions. Set it to the actual HTTPS production domain. Also set `NEXT_PUBLIC_SITE_URL` for the static Next.js build. Both must agree.
+- GEO here means **Generative Engine Optimization**, not a guarantee of AI citations. Structured data, factual pages and consistent entity information improve machine readability but do not guarantee search rankings, indexing or inclusion in AI-generated answers.
+
+### Verification required before claiming production-ready
+1. Install and build dependencies; deploy Cloudflare Pages with Pages Functions enabled.
+2. Bind D1 and R2 and configure Access authentication. Apply migrations 0001 then 0002.
+3. Add a product in admin, upload a real photo, supply accurate title, description, brand, alt text and specifications, then publish.
+4. Fetch `/products/<slug>/` **without JavaScript**; verify status 200, canonical, JSON-LD, title, description and image.
+5. Fetch `/sitemap.xml` and verify the product URL and correct domain. Check robots.txt.
+6. Unpublish or set noindex and verify the page's robots directive and sitemap behavior. Check Cloudflare cache invalidation.
+7. Test Google Search Console URL Inspection and Rich Results Test. Request indexing only after the page is public and verified.
+8. Configure anti-spam/rate limiting for public quotation submissions.
+9. Verify Cloudflare Access protects both admin UI and APIs. Do not treat the static UI as a security boundary.
+10. Confirm the Lagos head office's exact public address and phone before displaying them.
+
+### Known limitations
+- Collection, blog, service and gallery uploads do not all have fully dynamic server-rendered SEO pages yet.
+- Uploaded photos use opaque storage keys. Descriptive alt text and captions are available; SEO-friendly filenames and automatic image resizing are not yet implemented.
+- Existing static product pages may conflict with D1 slugs; avoid reusing slugs until tested.
+- Live build, deployment, D1 migration, Cloudflare settings, Search Console and indexing have **not** been verified.
