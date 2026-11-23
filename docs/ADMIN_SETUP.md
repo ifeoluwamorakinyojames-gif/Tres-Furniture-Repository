@@ -25,3 +25,15 @@
 - Admin supports products, banners and images only. Quotations, staff roles, audit history, article editing and media deletion are not implemented.
 - The static admin HTML is not a security boundary; protect routes in Cloudflare Access. D1 and R2 data operations require validated Access JWT.
 - Test Pages Functions compatibility, migrations, deployment, access policies and all CRUD flows before treating this as live. No Cloudflare resources were created or deployed by the GitHub commits.
+
+
+## Additional features committed
+- Site image slots: collection photos, homepage editorial images and promotional lighting image; upload in admin > Images, assign in admin > Website images.
+- Public quotation form at /contact, private admin > Quotations inbox with status updates.
+- D1 migration now includes `site_images` and `enquiries` tables. Apply the full migration before enabling these features.
+- Public APIs: `GET /api/site-images`, `POST /api/enquiries`.
+- Authenticated APIs: `GET/PUT /api/admin/site-images`, `GET/PUT /api/admin/enquiries`.
+- Public enquiries endpoint needs Cloudflare WAF/rate limiting and Turnstile before production exposure to prevent spam; the form does not currently send email notifications.
+- Site image changes appear via client-side fetching; SEO crawlers and social cards may still see static placeholders.
+- Some original product detail, blog, services, and gallery imagery remains static and not yet fully editable.
+- This repository change does **not** configure the user's Cloudflare account or confirm deployment. Check build logs and run end-to-end tests.
