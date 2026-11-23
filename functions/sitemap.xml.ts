@@ -10,8 +10,8 @@ export const onRequestGet:PagesFunction<SeoEnv> = async ctx=>{
  const paths=new Map<string,string>();
  for(const path of staticPaths)if(!path.startsWith('/admin')&&!path.startsWith('/api/'))paths.set(path,'');
  try{
- const rows=await ctx.env.DB.prepare('SELECT slug,updated_at FROM products WHERE published=1 AND indexable=1 ORDER BY updated_at DESC LIMIT 10000').all<{slug:string;updated_at:string}>();
- for(const row of rows.results||[])paths.set('/products/'+row.slug+'/',row.updated_at||'');
+ const rows=await ctx.env.DB.prepare('SELECT slug,updated_at,published,indexable FROM products ORDER BY updated_at DESC LIMIT 10000').all<{slug:string;updated_at:string;published:number;indexable:number}>();
+ for(const row of rows.results||[]){const path='/products/'+row.slug+'/';if(row.published===1&&row.indexable===1)paths.set(path,row.updated_at||'');else paths.delete(path);}
  }catch{}
  if(paths.size===0)return ctx.next();
  const body='<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'+[...paths].map(([path,lastmod])=>'<url><loc>'+esc(base+path)+'</loc>'+(lastmod?'<lastmod>'+esc(lastmod.slice(0,10))+'</lastmod>':'')+'</url>').join('\n')+'\n</urlset>';
