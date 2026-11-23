@@ -207,3 +207,49 @@ a:focus-visible,button:focus-visible{outline:3px solid #bf9161;outline-offset:3p
 @media(max-width:900px){.nav{gap:12px}.links{row-gap:12px}}
 @media(max-width:650px){.rufesReveal{transform:translateY(12px)}.homeMain .product:hover,.homeMain .journalCard:hover,.homeMain .tile:hover{transform:none}.nav{padding:12px 16px}.links{gap:12px;row-gap:9px}.links a{padding:4px 0}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}.rufesReveal{opacity:1;transform:none}}
+
+
+/* RUFES administration workspace: visual scaffold only; backend authorization required */
+.adminShell{min-height:100vh;display:grid;grid-template-columns:250px minmax(0,1fr);background:#f6f4f1;color:#302c2a;font-family:'DM Sans',Arial,sans-serif}
+.adminSidebar{background:#2b2526;color:#f9f3eb;padding:24px 14px;display:flex;flex-direction:column;min-height:100vh}
+.adminIdentity{display:flex;align-items:center;gap:12px;padding:6px 12px 30px}
+.adminIdentity strong{display:block;letter-spacing:2px;font-size:20px}
+.adminIdentity small{display:block;color:#cbbdb7;font-size:11px;margin-top:3px}
+.adminMark{display:grid;place-items:center;width:42px;height:42px;border-radius:12px;background:#a77859;font-family:Georgia,serif;font-size:27px;color:white}
+.adminSidebarCaption{font-size:10px;letter-spacing:2px;color:#b8a9a1;padding:8px 14px 12px}
+.adminSidebar nav{display:grid;gap:5px}
+.adminNavItem{width:100%;display:flex;align-items:center;gap:13px;border:0;border-radius:9px;background:transparent;color:#e7ded7;text-align:left;padding:13px 14px;font:600 13px 'DM Sans',sans-serif;cursor:pointer;transition:background .2s}
+.adminNavItem span{font-size:19px;min-width:22px;text-align:center}
+.adminNavItem:hover{background:#46383a}
+.adminNavItem.selected{background:#865343;color:#fff}
+.adminSidebarBottom{margin-top:auto;padding:25px 12px 6px;display:grid;gap:12px;font-size:13px}
+.adminSidebarBottom small{font-size:11px;color:#b8a9a1}
+.adminWorkspace{min-width:0}
+.adminShell .adminTopbar{height:70px;position:static;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 32px;background:#fff;color:#55463f;border-bottom:1px solid #e9e2da;box-shadow:none;font-size:13px;font-weight:700}
+.adminTopbar a{color:#85513c}
+.adminMenuToggle{display:none;background:transparent;border:0;font-size:22px;color:#55463f}
+.adminContent{max-width:1340px;margin:0 auto;padding:34px}
+.adminHeading{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:24px}
+.adminHeading h1{font-size:clamp(29px,3vw,39px);margin:6px 0}
+.adminHeading p{margin:0;color:#7a706a;font-size:14px}
+.adminEyebrow{font-size:10px;letter-spacing:2px;font-weight:700;color:#9a6b53}
+.adminSetupTag,.adminComingSoon{background:#f2e7d9;color:#815038;border-radius:30px;padding:8px 13px;font-size:11px;font-weight:700;white-space:nowrap}
+.adminNotice{background:#fff9ed;border:1px solid #e8d6b8;border-left:4px solid #b08a55;border-radius:9px;padding:18px 20px;font-size:13px;line-height:1.7;margin-bottom:25px;color:#564c41}
+.adminStatGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:15px;margin-bottom:24px}
+.adminStat,.adminPanel{background:white;border:1px solid #ebe4dd;border-radius:13px;box-shadow:0 5px 20px #281f1808}
+.adminStat{padding:23px;display:grid;gap:10px}
+.adminStat span{font-size:13px;color:#7a6d63;font-weight:600}
+.adminStat strong{font-size:35px;color:#54362d}
+.adminStat small{font-size:11px;color:#95877d}
+.adminPanel{padding:30px}
+.adminPanel h2{font-size:26px;margin:0 0 12px}
+.adminPanel p{font-size:14px;color:#6d625d;line-height:1.8;max-width:750px}
+.adminQuickActions{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+.adminQuickActions button{border:1px solid #dbc6b9;border-radius:8px;padding:12px 16px;background:#faf5f0;color:#6b4035;font-weight:700;cursor:pointer}
+.adminQuickActions button:hover{background:#efe2d7}
+.adminEmptyPanel{min-height:300px;display:flex;flex-direction:column;align-items:flex-start;justify-content:center}
+.adminEmptyIcon{font-size:38px;color:#a77859;margin-bottom:15px}
+@media(max-width:1100px){.adminStatGrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:760px){.adminShell{grid-template-columns:minmax(0,1fr)}.adminSidebar{position:fixed;z-index:40;top:0;bottom:0;left:0;width:250px;transform:translateX(-100%);transition:transform .2s;overflow-y:auto}.adminSidebar.adminSidebarOpen{transform:translateX(0)}.adminMenuToggle{display:block}.adminShell .adminTopbar{padding:0 16px;height:60px}.adminContent{padding:22px 16px}.adminHeading{align-items:flex-start;flex-direction:column}.adminStatGrid{gap:10px}.adminStat{padding:17px}.adminPanel{padding:22px}}
+@media(max-width:420px){.adminStatGrid{grid-template-columns:1fr}.adminTopbar span{font-size:11px}}
+@media(prefers-reduced-motion:reduce){.adminSidebar{transition:none}}
