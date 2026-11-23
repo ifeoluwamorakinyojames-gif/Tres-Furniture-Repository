@@ -33,7 +33,7 @@ export default function Home() {
       </div>
     </section>
     <div className="promiseBar"><span>Thoughtfully curated collections</span><span>Installation & styling enquiries</span><span>Visit our Warri showroom</span></div>
-    <main>
+    <main className="homeMain">
       <section className="wrap">
         <div className="sectionTitle"><div><span className="sectionKicker">EXPLORE RUFES</span><h2>Shop by collection</h2></div><Link href="/collections">All collections →</Link></div>
         <div className="categoryGrid">{categories.map(c => <CategoryCard key={c.slug} c={c} />)}</div>
