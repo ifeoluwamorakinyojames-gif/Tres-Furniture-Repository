@@ -159,3 +159,22 @@ main>.wrap+ .wrap{padding-top:30px}
 .homeMain .sectionTitle{margin-bottom:16px}
 .homeMain .widePromo{margin-top:20px;margin-bottom:20px}
 @media(max-width:650px){.homeMain>.wrap{padding:23px 16px!important}.homeMain>.wrap.editorialWrap{padding-top:16px!important}.homeMain .serviceGrid{gap:12px}.homeMain .serviceTile{padding:19px}.homeMain .categoryGrid{row-gap:10px}}
+
+
+/* Rotating showroom hero: full-bleed image slideshow */
+.rufesSlider{height:clamp(430px,47vw,610px);position:relative;overflow:hidden;background:#251a18;color:#fff}
+.rufesSlide{position:absolute;inset:0;background-size:cover;background-position:center;opacity:0;visibility:hidden;transition:opacity .75s ease,visibility .75s;display:flex;align-items:center;pointer-events:none}
+.rufesSlide.isActive{opacity:1;visibility:visible;pointer-events:auto;z-index:1}
+.rufesSlideInner{max-width:1320px;width:100%;margin:auto;padding:45px 24px 85px}
+.rufesSlide h1,.rufesSlide h2{font-family:'Playfair Display',Georgia,serif;font-size:clamp(42px,6vw,78px);line-height:1.07;margin:15px 0;max-width:790px;color:white}
+.rufesSlide h1 em,.rufesSlide h2 em{color:#efd7b3;font-weight:500}
+.rufesSlide p{max-width:550px;font-size:16px;line-height:1.7;color:#f3e9e2}
+.rufesSliderControls{position:absolute;z-index:3;bottom:25px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:16px}
+.rufesSliderControls>button{height:38px;width:38px;border:1px solid #ffffff8a;border-radius:50%;background:#251a1859;color:white;font-size:27px;cursor:pointer;line-height:1}
+.rufesSliderDots{display:flex;gap:9px;align-items:center}
+.rufesSliderDots button{width:9px;height:9px;border:0;border-radius:50%;background:#ffffff8a;cursor:pointer;padding:0}
+.rufesSliderDots button.active{background:#f3c889;width:25px;border-radius:8px}
+.rufesSliderPause{position:absolute;z-index:3;right:24px;bottom:25px;background:#251a1880;color:#fff;border:1px solid #ffffff8a;border-radius:5px;padding:8px 12px;cursor:pointer;font-size:12px}
+.rufesSlider button:focus-visible,.rufesSlider a:focus-visible{outline:3px solid #f3c889;outline-offset:3px}
+@media(max-width:650px){.rufesSlider{height:500px}.rufesSlide{background-position:60% center}.rufesSlideInner{padding:35px 20px 90px}.rufesSlide h1,.rufesSlide h2{font-size:43px}.rufesSlide p{font-size:14px;line-height:1.6}.rufesSliderControls{bottom:20px}.rufesSliderPause{right:12px;bottom:18px;font-size:11px}}
+@media(prefers-reduced-motion:reduce){.rufesSlide{transition:none}}
