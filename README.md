@@ -30,3 +30,7 @@ Product, collection, service and blog pages use descriptive headings, metadata, 
 This source was imported from the existing RUFES AppDeploy website. **The original logo binary file is not yet present in this GitHub repository.** Upload the authentic image to `public/resources/rufes-logo.jpg` before deployment; the site references that path. The current sample catalogue images are illustrative and should be replaced with verified product photography.
 
 Existing preview: https://rufes-strategic-ventures-by5dpa.v2.appdeploy.ai/
+
+## Cloudflare D1 deployment
+
+The Cloudflare Pages project `rufes-furniture-repository` uses a D1 database binding named `DB`. After creating or updating the production binding, deploy the latest `main` branch and verify the Pages deployment status. R2 media storage is optional and is not configured for the free-only setup; image-upload features that depend on R2 require a separate implementation.
