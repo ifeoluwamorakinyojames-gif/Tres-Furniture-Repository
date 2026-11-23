@@ -6,7 +6,7 @@ type Item = Record<string, unknown> & { id: string; image_key?: string; name?: s
 type Resource = 'products' | 'banners' | 'media' | 'site-images' | 'enquiries';
 const tabs: {key:Resource;label:string}[] = [{key:'products',label:'Products'},{key:'banners',label:'Homepage slides'},{key:'media',label:'Images'},{key:'site-images',label:'Website images'},{key:'enquiries',label:'Quotations'}];
 const imageUrl = (key:unknown) => typeof key==='string' && key ? '/api/media/'+key : '';
-const initial = {name:'',slug:'',category:'',description:'',image_key:'',image_alt:'',title:'',accent:'',label:'',href:'/collections',action_label:'Explore collection',sort_order:0,published:false};
+const initial = {name:'',slug:'',category:'',description:'',image_key:'',image_alt:'',title:'',accent:'',label:'',href:'/collections',action_label:'Explore collection',sort_order:0,published:false,seo_title:'',meta_description:'',primary_keyword:'',specifications:'',brand:'',image_caption:'',indexable:true};
 
 export default function Admin() {
   const [tab,setTab]=useState<Resource>('products');
@@ -92,6 +92,7 @@ export default function Admin() {
           <label className="adminField"><span>Choose uploaded image</span><select value={form.image_key} onChange={e=>{const selected=media.find(m=>m.object_key===e.target.value);setForm(old=>({...old,image_key:e.target.value,image_alt:String(selected?.alt||old.image_alt)}));}}><option value="">No image selected</option>{media.map(m=><option key={m.id} value={String(m.object_key)}>{String(m.alt||m.object_key)}</option>)}</select></label>
           {form.image_key&&<img className="adminSelectedImage" src={imageUrl(form.image_key)} alt={form.image_alt||'Selected image'}/>}
           {field('image_alt','Image alt text')}
+          {tab==='products'&&<>{field('seo_title','SEO page title (recommended 50–65 characters)',true)}{field('meta_description','Meta description (recommended 140–160 characters)',true)}{field('primary_keyword','Primary search phrase')}{field('brand','Verified product brand')}{field('image_caption','Image caption')}<label className="adminField"><span>Verified product specifications (one per line)</span><textarea value={form.specifications} rows={5} onChange={e=>setForm(old=>({...old,specifications:e.target.value}))}/></label><label className="adminCheck"><input type="checkbox" checked={form.indexable} onChange={e=>setForm(old=>({...old,indexable:e.target.checked}))}/> Allow search engine indexing</label></>}
           <label className="adminField"><span>Display order</span><input type="number" min="0" max="100000" value={form.sort_order} onChange={e=>setForm(old=>({...old,sort_order:Number(e.target.value)}))}/></label>
           <label className="adminCheck"><input type="checkbox" checked={form.published} onChange={e=>setForm(old=>({...old,published:e.target.checked}))}/> Publish on website</label>
           <div className="adminQuickActions"><button className="btn" disabled={!connected||busy}>{editing?'Save changes':'Create item'}</button>{editing&&<button type="button" onClick={reset}>Cancel edit</button>}</div>
