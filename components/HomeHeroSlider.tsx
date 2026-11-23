@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { photos } from '../lib/catalog';
 
-const slides = [
+const defaultSlides = [
   { label: 'RUFES HOME & LIFESTYLE · WARRI', title: 'Beautiful spaces.', accent: 'Inspired living.', description: 'Discover thoughtfully selected furniture and home accents for spaces that feel like yours.', image: photos.furniture, href: '/collections/furniture', action: 'Explore furniture' },
   { label: 'THE LIGHTING EDIT', title: 'Light up every room.', accent: 'Make it remarkable.', description: 'Browse chandeliers and decorative lighting ideas, and request details from our showroom.', image: photos.lighting, href: '/collections/lighting', action: 'Explore lighting' },
   { label: 'FITNESS & RECREATION', title: 'Spaces made for life.', accent: 'Play, move, enjoy.', description: 'Explore gym equipment, playground solutions and recreation essentials for your space.', image: photos.gym, href: '/collections/gym', action: 'Explore fitness' },
@@ -11,12 +11,18 @@ const slides = [
 
 export default function HomeHeroSlider() {
   const [active, setActive] = useState(0);
+  const [slides, setSlides] = useState(defaultSlides);
+  useEffect(() => {
+    fetch('/api/content').then(r => r.ok ? r.json() : null).then(data => {
+      if (data?.banners?.length) setSlides(data.banners.map((b: {label:string;title:string;accent:string;description:string;image_key:string;href:string;action_label:string}) => ({label:b.label,title:b.title,accent:b.accent,description:b.description,image:b.image_key ? '/api/media/'+b.image_key : photos.decor,href:b.href,action:b.action_label})));
+    }).catch(() => {});
+  }, []);
   const [paused, setPaused] = useState(false);
   useEffect(() => {
     if (paused) return;
     const timer = window.setInterval(() => setActive(current => (current + 1) % slides.length), 6500);
     return () => window.clearInterval(timer);
-  }, [paused]);
+  }, [paused, slides.length]);
 
   const navigate = (direction: number) => {
     setActive(current => (current + direction + slides.length) % slides.length);
