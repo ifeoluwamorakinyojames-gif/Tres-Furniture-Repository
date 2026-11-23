@@ -1,23 +1,35 @@
-# RUFES admin backend setup
-Status: database schema and role model committed; NOT yet connected to the live static website.
+# RUFES admin setup — Cloudflare architecture
 
-## Architecture
-- Next.js static export serves the storefront.
-- Supabase Auth manages staff sign-in.
-- Supabase Postgres with Row Level Security enforces product and role access.
-- Supabase Storage will hold images (bucket and policies must be configured).
-- Storefront must be updated to fetch published products from Supabase; current lib/catalog.ts is static.
-- Admin pages and secure staff-invitation flow are not yet implemented.
+## Current status
+- `/admin/` is a **publicly accessible UI preview**, not a secure admin system.
+- It deliberately does not display real customer data, accept credentials, upload files or edit products.
+- The existing storefront is a static Next.js export. A static page alone cannot securely authenticate administrators or write to a database.
+- Do not add client-side-only password checks or place API tokens in `NEXT_PUBLIC_*` variables.
 
-## Setup
-1. Create a Supabase project owned by RUFES.
-2. Run supabase/schema.sql in SQL editor.
-3. Configure allowed origins, email authentication, MFA, and password reset.
-4. Create the first owner via Supabase Auth; use SQL editor to insert their profile with role owner and active true. Never create a public owner-registration endpoint.
-5. Create staff accounts via owner-controlled invitation process, with inactive default and owner activation.
-6. Configure a private administrative storage policy and a public-read published-product image bucket.
-7. Add NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY as deployment variables (anon key is public; NEVER put service_role in client code).
-8. Implement /admin login, product editor, inventory, staff management, image uploader, audit trail, and dynamic storefront queries before launch.
-9. Test unauthenticated access, staff attempts to publish/delete/change roles, and owner workflows.
+## Planned backend
+1. **Cloudflare Access**: protect `/admin/*` and admin API routes using an authenticated identity policy. For a Pages static site, configure Access on the actual hostname and route patterns; confirm coverage of both `/admin` and `/admin/`.
+2. **Cloudflare Workers**: server-side API for products, collections, homepage slides, enquiries, media, staff roles and audit history. Validate Access JWTs server-side, enforce authorization per endpoint, check inputs and apply rate limits.
+3. **Cloudflare D1**: products, product variants/specifications, collections, homepage banners, enquiries, users/roles, and audit logs. Use parameterized queries and migrations.
+4. **Cloudflare R2**: uploaded product photos and slideshow images. Restrict write operations to authorized Workers; validate content type, size and file signatures. Use optimized image variants, descriptive alt text and appropriate cache headers.
+5. **Storefront publishing**: decide between a public read API (client-side published-product fetching) or a deploy-triggered static build for indexable product pages. For SEO, preserve server-generated HTML and sitemaps for published products.
 
-Do not treat GitHub static export as an API server. Backend operations must run on Supabase or another actual server.
+## Proposed admin sections
+- Overview
+- Products: create, edit, archive, publish, photos, alt text and specifications
+- Collections
+- Homepage banners: ordering, captions and image upload
+- Quotations: contact details, product reference and follow-up status
+- Media library
+- Pages, services and articles
+- Settings and staff
+
+## Before production use
+- Confirm Cloudflare account ownership, domain and Access policies.
+- Deploy D1 migrations and Worker routes.
+- Implement owner/staff permissions on the Worker, not only the UI.
+- Connect the admin frontend to the authenticated Worker API.
+- Verify denied unauthenticated requests and forbidden staff operations.
+- Verify image upload security, quotation privacy, backup/restore and logs.
+- Test the complete Cloudflare deployment and mobile admin interface.
+
+The older Supabase schema is historical scaffolding only. **Do not use Supabase for this project.**
