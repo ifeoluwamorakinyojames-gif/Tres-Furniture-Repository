@@ -3,6 +3,8 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { Header, Footer } from '../components/Site';
 export default function Contact() {
+  const router = useRouter();
+  const product = typeof router.query.product === 'string' ? router.query.product.slice(0, 120) : '';
   return (
     <>
       <Head>
@@ -14,7 +16,8 @@ export default function Contact() {
       </Head>
       <Header />
       <main className="wrap">
-        <h1>Request a quotation</h1>\n        {product && <div className="note"><strong>Product enquiry:</strong> {product}</div>}
+        <h1>Request a quotation</h1>
+        {product && <div className="note"><strong>Product enquiry:</strong> {product}</div>}
         <p>
           Interested in a product? Contact our showroom for a personalized quotation and to confirm availability,
           dimensions, price and showroom visiting details.
