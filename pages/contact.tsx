@@ -1,5 +1,6 @@
 import Head from 'next/head';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { Header, Footer } from '../components/Site';
 export default function Contact() {
   return (
@@ -13,9 +14,9 @@ export default function Contact() {
       </Head>
       <Header />
       <main className="wrap">
-        <h1>Contact RUFES</h1>
+        <h1>Request a quotation</h1>\n        {product && <div className="note"><strong>Product enquiry:</strong> {product}</div>}
         <p>
-          Interested in a product? Get in touch to confirm availability,
+          Interested in a product? Contact our showroom for a personalized quotation and to confirm availability,
           dimensions, price and showroom visiting details.
         </p>
         <div className="banner">
