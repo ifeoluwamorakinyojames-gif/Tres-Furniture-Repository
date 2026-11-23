@@ -1,4 +1,4 @@
-import { Env, requireAdmin, respond, cleanText, isSafePath, readBody } from '../../_shared';
+import { Env, requireAdmin, respond, cleanText, isSafePath, readBody } from '../_shared';
 type Context = Parameters<PagesFunction<Env>>[0];
 const allowed = ['products','banners','media'] as const;
 type Table = typeof allowed[number];
