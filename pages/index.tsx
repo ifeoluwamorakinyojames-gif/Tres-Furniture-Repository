@@ -5,6 +5,7 @@ import { categories, products, photos } from '../lib/catalog';
 import { services, articles } from '../lib/content';
 import HomeHeroSlider from '../components/HomeHeroSlider';
 import FeaturedProducts from '../components/FeaturedProducts';
+import { useSiteImages } from '../components/useSiteImages';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://rufes-home-and-lifestyle.pages.dev';
 
@@ -15,6 +16,7 @@ const groups = [
 ];
 
 export default function Home() {
+  const siteImage=useSiteImages();
   return <>
     <Head>
       <title>Furniture, Chandeliers, Gym & Playground Equipment in Warri | RUFES</title>
@@ -34,7 +36,7 @@ export default function Home() {
       </section>
       <section className="wrap editorialWrap">
         <div className="sectionTitle"><div><span className="sectionKicker">DESIGNED FOR EVERY SPACE</span><h2>Find your inspiration</h2></div></div>
-        <div className="editorialGrid">{groups.map(g => <Link className="editorialCard" key={g.name} href={g.href} style={{ backgroundImage: 'linear-gradient(0deg,rgba(23,16,14,.82),transparent 72%),url(' + g.image + ')' }}>
+        <div className="editorialGrid">{groups.map(g => <Link className="editorialCard" key={g.name} href={g.href} style={{ backgroundImage: 'linear-gradient(0deg,rgba(23,16,14,.82),transparent 72%),url(' + siteImage('editorial:'+ (g.href.split('/').pop()||'furniture'),g.image).src + ')' }}>
           <div><span>{g.tag}</span><h3>{g.name}</h3><p>{g.text}</p><strong>Explore collection →</strong></div>
         </Link>)}</div>
       </section>
@@ -43,7 +45,7 @@ export default function Home() {
         <p className="muted">Illustrative catalogue images. Contact the showroom to confirm actual models, prices and stock.</p>
         <FeaturedProducts />
       </section>
-      <section className="widePromo"><div className="widePromoImage" style={{backgroundImage:'url(' + photos.lighting + ')'}}/><div className="widePromoCopy"><span className="sectionKicker">THE LIGHTING COLLECTION</span><h2>Make a statement with light.</h2><p>From contemporary chandeliers to warm decorative lighting, explore ideas for memorable interiors.</p><Link className="btn" href="/collections/lighting">Explore lighting →</Link></div></section>
+      <section className="widePromo"><div className="widePromoImage" style={{backgroundImage:'url(' + siteImage('promo:lighting',photos.lighting).src + ')'}}/><div className="widePromoCopy"><span className="sectionKicker">THE LIGHTING COLLECTION</span><h2>Make a statement with light.</h2><p>From contemporary chandeliers to warm decorative lighting, explore ideas for memorable interiors.</p><Link className="btn" href="/collections/lighting">Explore lighting →</Link></div></section>
       <section className="wrap">
         <div className="sectionTitle"><div><span className="sectionKicker">MORE THAN A SHOWROOM</span><h2>Our services</h2></div><Link href="/services">All services →</Link></div>
         <div className="serviceGrid">{services.map((s,i)=><Link href={'/services/'+s.slug} key={s.slug} className="serviceTile"><span className="serviceNumber">0{i+1}</span><h3>{s.name}</h3><p>{s.description}</p><strong>Learn more →</strong></Link>)}</div>
