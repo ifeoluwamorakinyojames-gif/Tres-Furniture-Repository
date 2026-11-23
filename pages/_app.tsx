@@ -1,6 +1,7 @@
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
 import '../styles/global.css';
+import MotionEnhancements from '../components/MotionEnhancements';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://rufes-home-and-lifestyle.pages.dev';
 const business = {
@@ -35,6 +36,7 @@ export default function App({ Component, pageProps }: AppProps) {
       <meta name="geo.placename" content="Warri, Delta State, Nigeria" />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(business).replace(/</g, '\\u003c') }} />
     </Head>
+    <MotionEnhancements />
     <Component {...pageProps} />
   </>;
 }
