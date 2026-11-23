@@ -1,5 +1,5 @@
 const fs = require('node:fs');
-const base = (process.env.NEXT_PUBLIC_SITE_URL || 'https://rufes-strategic-ventures-by5dpa.v2.appdeploy.ai').replace(/\/$/, '');
+const base = (process.env.NEXT_PUBLIC_SITE_URL || 'https://rufes-home-and-lifestyle.pages.dev').replace(/\/$/, '');
 const slugs = source => [...source.matchAll(/slug:\s*["']([^"']+)["']/g)].map(m => m[1]);
 const catalogue = fs.readFileSync('lib/catalog.ts', 'utf8');
 const content = fs.readFileSync('lib/content.ts', 'utf8');
