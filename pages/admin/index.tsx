@@ -1,51 +1,85 @@
 import Head from 'next/head';
 import Link from 'next/link';
-import { useState } from 'react';
+import { ChangeEvent, FormEvent, useCallback, useEffect, useState } from 'react';
 
-const sections = [
-  { key: 'overview', label: 'Overview', icon: '◫' },
-  { key: 'products', label: 'Products', icon: '▦' },
-  { key: 'collections', label: 'Collections', icon: '◈' },
-  { key: 'banners', label: 'Homepage banners', icon: '▣' },
-  { key: 'enquiries', label: 'Quotations', icon: '✉' },
-  { key: 'media', label: 'Media library', icon: '▧' },
-  { key: 'content', label: 'Pages & articles', icon: '▤' },
-  { key: 'settings', label: 'Settings & staff', icon: '⚙' },
-] as const;
-type Section = typeof sections[number]['key'];
+type Item = Record<string, unknown> & { id: string; image_key?: string; name?: string; title?: string; published?: number; slug?: string; category?: string; description?: string; image_alt?: string };
+type Resource = 'products' | 'banners' | 'media';
+const tabs: {key:Resource;label:string}[] = [{key:'products',label:'Products'},{key:'banners',label:'Homepage slides'},{key:'media',label:'Images'}];
+const imageUrl = (key:unknown) => typeof key==='string' && key ? '/api/media/'+key : '';
+const initial = {name:'',slug:'',category:'',description:'',image_key:'',image_alt:'',title:'',accent:'',label:'',href:'/collections',action_label:'Explore collection',sort_order:0,published:false};
 
 export default function Admin() {
-  const [active, setActive] = useState<Section>('overview');
-  const [menuOpen, setMenuOpen] = useState(false);
-  const section = sections.find(item => item.key === active)!;
+  const [tab,setTab]=useState<Resource>('products');
+  const [items,setItems]=useState<Item[]>([]);
+  const [media,setMedia]=useState<Item[]>([]);
+  const [form,setForm]=useState({...initial});
+  const [editing,setEditing]=useState<string|null>(null);
+  const [busy,setBusy]=useState(false);
+  const [message,setMessage]=useState('');
+  const [connected,setConnected]=useState(false);
+  const [uploadAlt,setUploadAlt]=useState('');
+  const [file,setFile]=useState<File|null>(null);
+
+  const load=useCallback(async (resource:Resource) => {
+    const response=await fetch('/api/admin/'+resource,{credentials:'same-origin',cache:'no-store'});
+    if(!response.ok) throw new Error(response.status===401||response.status===403?'Administrator authentication required. Configure Cloudflare Access.':'Backend not available ('+response.status+'). Check Cloudflare D1, R2 and Pages Functions.');
+    const result=await response.json() as {items:Item[]};
+    if(resource==='media')setMedia(result.items);else setItems(result.items);
+    setConnected(true);
+  },[]);
+  useEffect(()=>{setMessage('');Promise.all([load(tab),load('media')]).catch(error=>{setConnected(false);setMessage(String(error.message));});},[tab,load]);
+  const reset=()=>{setForm({...initial});setEditing(null);};
+  const edit=(item:Item)=>{
+    setEditing(item.id);
+    setForm({...initial,...item,published:item.published===1||item.published===true,sort_order:Number(item.sort_order)||0} as typeof initial);
+    window.scrollTo({top:0,behavior:'smooth'});
+  };
+  const save=async(event:FormEvent)=>{
+    event.preventDefault();setBusy(true);setMessage('');
+    try{
+      const url='/api/admin/'+tab+(editing?'/'+editing:'');
+      const response=await fetch(url,{method:editing?'PUT':'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(form),credentials:'same-origin'});
+      const result=await response.json();
+      if(!response.ok)throw new Error(result.error||'Unable to save');
+      reset();await load(tab);setMessage('Saved successfully. Published changes should appear on the homepage shortly.');
+    }catch(error){setMessage(String(error));}finally{setBusy(false);}
+  };
+  const remove=async(id:string)=>{
+    if(!window.confirm('Delete this item permanently?'))return;
+    setBusy(true);
+    try{const response=await fetch('/api/admin/'+tab+'/'+id,{method:'DELETE'});if(!response.ok)throw new Error('Unable to delete');await load(tab);reset();setMessage('Item deleted.');}catch(error){setMessage(String(error));}finally{setBusy(false);}
+  };
+  const upload=async(event:FormEvent)=>{
+    event.preventDefault();if(!file)return;setBusy(true);setMessage('');
+    try{
+      const response=await fetch('/api/admin/media?alt='+encodeURIComponent(uploadAlt),{method:'POST',headers:{'Content-Type':file.type},body:file});
+      const result=await response.json();
+      if(!response.ok)throw new Error(result.error||'Upload failed');
+      await load('media');setFile(null);setUploadAlt('');setMessage('Image uploaded. You can select it when editing a product or homepage slide.');
+    }catch(error){setMessage(String(error));}finally{setBusy(false);}
+  };
+  const field=(key:keyof typeof initial,label:string,required=false)=> <label className="adminField" key={key}><span>{label}</span><input required={required} value={String(form[key])} onChange={event=>setForm(old=>({...old,[key]:event.target.value}))}/></label>;
   return <>
-    <Head>
-      <title>RUFES Admin Workspace | Setup Preview</title>
-      <meta name="robots" content="noindex,nofollow,noarchive" />
-      <meta name="description" content="RUFES administrative workspace setup preview." />
-    </Head>
+    <Head><title>RUFES Admin | Catalogue & Images</title><meta name="robots" content="noindex,nofollow,noarchive"/></Head>
     <div className="adminShell">
-      <aside className={'adminSidebar' + (menuOpen ? ' adminSidebarOpen' : '')}>
-        <div className="adminIdentity"><span className="adminMark">R</span><div><strong>RUFES</strong><small>Management workspace</small></div></div>
-        <div className="adminSidebarCaption">WORKSPACE</div>
-        <nav aria-label="Admin sections">
-          {sections.map(item => <button key={item.key} type="button" className={'adminNavItem' + (active === item.key ? ' selected' : '')} onClick={() => {setActive(item.key);setMenuOpen(false);}} aria-current={active === item.key ? 'page' : undefined}><span aria-hidden="true">{item.icon}</span>{item.label}</button>)}
-        </nav>
-        <div className="adminSidebarBottom"><Link href="/">← View website</Link><small>Cloudflare backend integration pending</small></div>
-      </aside>
-      <div className="adminWorkspace">
-        <header className="adminTopbar"><button className="adminMenuToggle" type="button" onClick={() => setMenuOpen(value => !value)} aria-expanded={menuOpen} aria-label="Toggle admin navigation">☰</button><span>RUFES / {section.label}</span><Link href="/">View storefront ↗</Link></header>
-        <main className="adminContent">
-          <div className="adminHeading"><div><span className="adminEyebrow">RUFES STRATEGIC VENTURES</span><h1>{section.label}</h1><p>Manage the RUFES showroom and enquiry-first product catalogue.</p></div><span className="adminSetupTag">Setup preview</span></div>
-          <div className="adminNotice"><strong>Backend connection required.</strong> This page is a design and navigation preview, not a working administration system. Product editing, uploads, login and quotation records will become available only after authenticated Cloudflare Workers, D1 and R2 are connected. Do not enter sensitive information here.</div>
-          {active === 'overview' ? <>
-            <div className="adminStatGrid">
-              {[['Products','—','Awaiting D1 connection'],['Collections','—','Awaiting D1 connection'],['Quotation requests','—','Awaiting Workers API'],['Uploaded images','—','Awaiting R2 connection']].map(([label,value,desc]) => <div className="adminStat" key={label}><span>{label}</span><strong>{value}</strong><small>{desc}</small></div>)}
-            </div>
-            <div className="adminPanel"><h2>Welcome to your showroom workspace</h2><p>From this dashboard you will be able to add and update products, manage homepage slides, upload optimized images, review quotation requests and publish website content without changing GitHub files.</p><div className="adminQuickActions"><button onClick={() => setActive('products')}>Products →</button><button onClick={() => setActive('banners')}>Homepage banners →</button><button onClick={() => setActive('enquiries')}>Quotations →</button></div></div>
-          </> : <div className="adminPanel adminEmptyPanel"><span className="adminEmptyIcon" aria-hidden="true">{section.icon}</span><h2>{section.label} management</h2><p>{active === 'products' ? 'Create product pages with names, categories, descriptions, specifications, image alt text, publication status and quotation-only calls to action.' : active === 'banners' ? 'Upload and reorder homepage slideshow images, headings, links and accessibility descriptions.' : active === 'media' ? 'Upload, optimize and organize product images in Cloudflare R2.' : active === 'enquiries' ? 'Review customer quotation requests and track responses securely.' : active === 'settings' ? 'Configure the showroom profile and owner-approved staff access.' : active === 'collections' ? 'Organize product categories and their landing pages.' : 'Create and update services, articles and website sections.'}</p><span className="adminComingSoon">Available after secure backend setup</span></div>}
-        </main>
-      </div>
+      <aside className="adminSidebar"><div className="adminIdentity"><span className="adminMark">R</span><div><strong>RUFES</strong><small>Content management</small></div></div><div className="adminSidebarCaption">MANAGE WEBSITE</div><nav aria-label="Admin sections">{tabs.map(t=><button key={t.key} type="button" className={'adminNavItem'+(tab===t.key?' selected':'')} onClick={()=>{setTab(t.key);reset();}}>{t.label}</button>)}</nav><div className="adminSidebarBottom"><Link href="/">← View website</Link><small>Protected API requires Cloudflare Access</small></div></aside>
+      <div className="adminWorkspace"><header className="adminTopbar"><strong>RUFES Content Studio</strong><Link href="/">View storefront ↗</Link></header><main className="adminContent">
+        <div className="adminHeading"><div><span className="adminEyebrow">SHOWROOM CONTENT MANAGEMENT</span><h1>{tabs.find(t=>t.key===tab)?.label}</h1><p>Manage the live catalogue and imagery from one workspace.</p></div><span className="adminSetupTag">{connected?'Backend connected':'Connection required'}</span></div>
+        {message&&<div className="adminNotice" role="status">{message}</div>}
+        {!connected&&<div className="adminNotice">The admin interface is not active until Cloudflare Access, D1, R2 and Pages Functions are configured. Do not upload private images or customer information before setup is verified.</div>}
+        {tab==='media'?<div className="adminPanel"><h2>Upload a product or banner image</h2><form onSubmit={upload} className="adminForm"><label className="adminField"><span>Image (JPG, PNG or WebP, maximum 5 MB)</span><input type="file" accept="image/jpeg,image/png,image/webp" required onChange={(e:ChangeEvent<HTMLInputElement>)=>setFile(e.target.files?.[0]||null)}/></label><label className="adminField"><span>Descriptive image alt text</span><input value={uploadAlt} onChange={e=>setUploadAlt(e.target.value)} maxLength={200} required/></label><button className="btn" disabled={!connected||busy||!file}>Upload image</button></form><div className="adminMediaGrid">{media.map(m=><div className="adminMediaItem" key={m.id}><img src={imageUrl(m.object_key)} alt={String(m.alt||'Uploaded image')}/><small>{String(m.alt||m.object_key)}</small></div>)}</div></div>:
+        <><div className="adminPanel"><h2>{editing?'Edit '+(tab==='products'?'product':'slide'):'Add '+(tab==='products'?'product':'homepage slide')}</h2><form onSubmit={save} className="adminForm">
+          {tab==='products'?<>{field('name','Product name',true)}{field('slug','SEO slug (e.g. modern-sofa)',true)}{field('category','Collection/category',true)}</>:<>{field('title','Slide heading',true)}{field('accent','Highlighted heading')}{field('label','Small label')}{field('href','Button link (internal path)',true)}{field('action_label','Button label')}</>}
+          <label className="adminField"><span>Description</span><textarea value={form.description} rows={4} onChange={e=>setForm(old=>({...old,description:e.target.value}))}/></label>
+          <label className="adminField"><span>Choose uploaded image</span><select value={form.image_key} onChange={e=>{const selected=media.find(m=>m.object_key===e.target.value);setForm(old=>({...old,image_key:e.target.value,image_alt:String(selected?.alt||old.image_alt)}));}}><option value="">No image selected</option>{media.map(m=><option key={m.id} value={String(m.object_key)}>{String(m.alt||m.object_key)}</option>)}</select></label>
+          {form.image_key&&<img className="adminSelectedImage" src={imageUrl(form.image_key)} alt={form.image_alt||'Selected image'}/>}
+          {field('image_alt','Image alt text')}
+          <label className="adminField"><span>Display order</span><input type="number" min="0" max="100000" value={form.sort_order} onChange={e=>setForm(old=>({...old,sort_order:Number(e.target.value)}))}/></label>
+          <label className="adminCheck"><input type="checkbox" checked={form.published} onChange={e=>setForm(old=>({...old,published:e.target.checked}))}/> Publish on website</label>
+          <div className="adminQuickActions"><button className="btn" disabled={!connected||busy}>{editing?'Save changes':'Create item'}</button>{editing&&<button type="button" onClick={reset}>Cancel edit</button>}</div>
+        </form></div>
+        <div className="adminPanel"><h2>Existing {tab==='products'?'products':'slides'}</h2><div className="adminItemList">{items.map(item=><div className="adminItemRow" key={item.id}>{item.image_key?<img src={imageUrl(item.image_key)} alt={String(item.image_alt||'')}/>:<span className="adminNoImage">No image</span>}<div><strong>{String(item.name||item.title)}</strong><small>{item.published?'Published':'Draft'} · {String(item.category||item.slug||'Homepage slide')}</small></div><button type="button" disabled={!connected||busy} onClick={()=>edit(item)}>Edit</button><button type="button" disabled={!connected||busy} onClick={()=>remove(item.id)}>Delete</button></div>)}{items.length===0&&<p className="muted">No database items yet. Existing static catalogue items remain visible until migrated.</p>}</div></div></>}
+      </main></div>
     </div>
   </>;
 }
