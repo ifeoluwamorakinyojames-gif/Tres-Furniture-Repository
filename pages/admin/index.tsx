@@ -2,7 +2,7 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { ChangeEvent, FormEvent, useCallback, useEffect, useState } from 'react';
 
-type Item = Record<string, unknown> & { id: string; image_key?: string; name?: string; title?: string; published?: number; slug?: string; category?: string; description?: string; image_alt?: string };
+type Item = Record<string, unknown> & { id: string; image_key?: string; name?: string; title?: string; published?: number | boolean; slug?: string; category?: string; description?: string; image_alt?: string };
 type Resource = 'products' | 'banners' | 'media' | 'site-images' | 'enquiries' | 'locations';
 const tabs: {key:Resource;label:string}[] = [{key:'products',label:'Products'},{key:'banners',label:'Homepage slides'},{key:'media',label:'Images'},{key:'site-images',label:'Website images'},{key:'enquiries',label:'Quotations'},{key:'locations',label:'Office locations'}];
 const imageUrl = (key:unknown) => typeof key==='string' && key ? '/api/media/'+key : '';
