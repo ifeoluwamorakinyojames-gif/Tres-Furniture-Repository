@@ -4,6 +4,8 @@ import { Header, Footer, CategoryCard, ProductCard } from '../components/Site';
 import { categories, products, photos } from '../lib/catalog';
 import { services, articles } from '../lib/content';
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://rufes-home-and-lifestyle.pages.dev';
+
 const groups = [
   { name: 'Furniture & interiors', text: 'Comfortable living, considered design.', image: photos.furniture, href: '/collections/furniture', tag: 'CURATED LIVING' },
   { name: 'Chandeliers & lighting', text: 'Statement pieces that transform a room.', image: photos.lighting, href: '/collections/lighting', tag: 'LIGHTING EDIT' },
@@ -15,10 +17,10 @@ export default function Home() {
     <Head>
       <title>Furniture, Chandeliers, Gym & Playground Equipment in Warri | RUFES</title>
       <meta name="description" content="Explore furniture, chandeliers, home décor, gym equipment, playground products, sports and Christmas decorations at RUFES Strategic Ventures in Warri." />
-      <link rel="canonical" href="https://rufes-strategic-ventures-by5dpa.v2.appdeploy.ai/" />
+      <link rel="canonical" href={siteUrl + '/'} />
       <meta property="og:title" content="RUFES Strategic Ventures | Lifestyle, Home & Recreation" />
       <meta property="og:type" content="website" />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({ '@context':'https://schema.org', '@type':'Store', name:'RUFES Strategic Ventures', url:'https://rufes-strategic-ventures-by5dpa.v2.appdeploy.ai/', description:'Furniture, home décor, lighting, gym and recreational products in Warri.', address:{'@type':'PostalAddress',streetAddress:"First Floor, The J's Innovations Building, Airport Road",addressLocality:'Warri',addressRegion:'Delta State',addressCountry:'NG'} }) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({ '@context':'https://schema.org', '@type':'Store', name:'RUFES Strategic Ventures', url:siteUrl + '/', description:'Furniture, home décor, lighting, gym and recreational products in Warri.', address:{'@type':'PostalAddress',streetAddress:"First Floor, The J's Innovations Building, Airport Road",addressLocality:'Warri',addressRegion:'Delta State',addressCountry:'NG'} }) }} />
     </Head>
     <Header />
     <section className="showcaseHero">
@@ -35,7 +37,7 @@ export default function Home() {
     <div className="promiseBar"><span>Thoughtfully curated collections</span><span>Installation & styling enquiries</span><span>Visit our Warri showroom</span></div>
     <main className="homeMain">
       <section className="wrap">
-        <div className="sectionTitle"><div><span className="sectionKicker">EXPLORE RUFES</span><h2>Shop by collection</h2></div><Link href="/collections">All collections →</Link></div>
+        <div className="sectionTitle"><div><span className="sectionKicker">EXPLORE RUFES</span><h2>Explore our collections</h2></div><Link href="/collections">All collections →</Link></div>
         <div className="categoryGrid">{categories.map(c => <CategoryCard key={c.slug} c={c} />)}</div>
       </section>
       <section className="wrap editorialWrap">
