@@ -8,7 +8,7 @@ export default function Services() {
     <Head>
       <title>Installation, Interior Styling & Delivery Services in Warri | RUFES</title>
       <meta name="description" content="Explore RUFES furniture installation, chandelier installation, gym and playground setup, interior styling and delivery services in Warri." />
-      <link rel="canonical" href="https://rufes-strategic-ventures-by5dpa.v2.appdeploy.ai/services/" />
+      <link rel="canonical" href="https://rufes-home-and-lifestyle.pages.dev/services/" />
     </Head>
     <Header />
     <main className="wrap">
