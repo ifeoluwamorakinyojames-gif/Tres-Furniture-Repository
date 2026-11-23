@@ -58,11 +58,11 @@ export default function Product({ slug }: { slug: string }) {
             <p>{p.description}</p>
             <div className="note">
               Catalogue preview: the image is illustrative, not a verified
-              photograph of RUFES inventory. Price, exact specifications and
-              stock must be confirmed with the showroom.
+              photograph of RUFES inventory. Exact specifications and
+              stock must be confirmed with the showroom. Request a quotation for pricing.
             </div>
             <p>
-              <strong>Price:</strong> On enquiry
+              <strong>Quotation:</strong> Available on request
             </p>
             <p>
               <strong>Availability:</strong> Please confirm
