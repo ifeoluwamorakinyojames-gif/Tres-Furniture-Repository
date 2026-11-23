@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { Header, Footer, CategoryCard, ProductCard } from '../components/Site';
 import { categories, products, photos } from '../lib/catalog';
 import { services, articles } from '../lib/content';
+import HomeHeroSlider from '../components/HomeHeroSlider';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://rufes-home-and-lifestyle.pages.dev';
 
@@ -23,17 +24,7 @@ export default function Home() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({ '@context':'https://schema.org', '@type':'Store', name:'RUFES Strategic Ventures', url:siteUrl + '/', description:'Furniture, home décor, lighting, gym and recreational products in Warri.', address:{'@type':'PostalAddress',streetAddress:"First Floor, The J's Innovations Building, Airport Road",addressLocality:'Warri',addressRegion:'Delta State',addressCountry:'NG'} }) }} />
     </Head>
     <Header />
-    <section className="showcaseHero">
-      <div className="showcaseHeroInner">
-        <span className="showcaseKicker">RUFES STRATEGIC VENTURES · WARRI</span>
-        <h1>Beautiful spaces.<br/><em>Inspired living.</em></h1>
-        <p>Discover furniture, distinctive lighting, home accents, fitness equipment and recreation essentials — all in one destination.</p>
-        <div className="heroActions">
-          <Link className="btn" href="/collections">Explore collections →</Link>
-          <Link className="outlineBtn" href="/showroom">Visit our showroom</Link>
-        </div>
-      </div>
-    </section>
+    <HomeHeroSlider />
     <div className="promiseBar"><span>Thoughtfully curated collections</span><span>Installation & styling enquiries</span><span>Visit our Warri showroom</span></div>
     <main className="homeMain">
       <section className="wrap">
