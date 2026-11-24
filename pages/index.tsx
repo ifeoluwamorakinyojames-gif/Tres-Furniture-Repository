@@ -24,6 +24,8 @@ export default function Home() {
       <link rel="canonical" href={siteUrl + '/'} />
       <meta property="og:title" content="RUFES Strategic Ventures | Lifestyle, Home & Recreation" />
       <meta property="og:type" content="website" />
+      <meta property="og:image" content={siteUrl + '/resources/RUFES_Strategic_Ventures_Logo.jpg'} />
+      <meta property="og:image:alt" content="RUFES Strategic Ventures logo" />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({ '@context':'https://schema.org', '@type':'Store', name:'RUFES Strategic Ventures', url:siteUrl + '/', description:'Furniture, home décor, lighting, gym and recreational products in Lagos and Warri.', telephone:'+2348075415120', address:{'@type':'PostalAddress',streetAddress:'Shop I265, Road 5, Ikota Shopping Complex',addressLocality:'Lagos',addressRegion:'Lagos',addressCountry:'NG'}, department:{'@type':'Store',name:'RUFES Warri / Effurun Branch',telephone:'+2348075415120',address:{'@type':'PostalAddress',streetAddress:'62 Airport Road, near Ugboroke Junction',addressLocality:'Effurun',addressRegion:'Delta State',addressCountry:'NG'}} }) }} />
     </Head>
     <Header />
