@@ -1,11 +1,13 @@
 import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { FormEvent, useState } from 'react';
+import { FormEvent, useState, useEffect } from 'react';
 import { Header, Footer } from '../components/Site';
 export default function Contact() {
   const router = useRouter();
   const product = typeof router.query.product === 'string' ? router.query.product.slice(0, 120) : '';
+  const [branch,setBranch]=useState('');
+  useEffect(()=>{if(router.query.branch==='Lagos HQ'||router.query.branch==='Warri / Effurun')setBranch(router.query.branch);},[router.query.branch]);
   const [status,setStatus]=useState('');
   const [busy,setBusy]=useState(false);
   const submit=async(e:FormEvent<HTMLFormElement>)=>{
@@ -38,6 +40,7 @@ export default function Contact() {
         </p>
         <form className="adminPanel enquiryForm" onSubmit={submit}>
           <h2>Send your quotation request</h2>
+          <label>Preferred showroom<select name="branch" required value={branch} onChange={e=>setBranch(e.target.value)}><option value="">Select a showroom</option><option>Lagos HQ</option><option>Warri / Effurun</option></select></label>
           <label>Your name<input name="name" maxLength={120} required /></label>
           <label>Email address<input name="email" type="email" maxLength={180} required /></label>
           <label>Phone (optional)<input name="phone" type="tel" maxLength={40} /></label>
