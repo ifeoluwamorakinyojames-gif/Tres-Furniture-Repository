@@ -62,6 +62,18 @@ export default function Admin() {
       await load('media');setFile(null);setUploadAlt('');setMessage('Image uploaded. You can select it when editing a product or homepage slide.');
     }catch(error){setMessage(String(error));}finally{setBusy(false);}
   };
+  const uploadProductImage=async(file:File)=>{
+    if(!['image/jpeg','image/png','image/webp'].includes(file.type)||file.size>5*1024*1024){setMessage('Choose a JPG, PNG or WebP image under 5 MB.');return;}
+    setBusy(true);setMessage('');
+    try{
+      const alt=form.image_alt.trim()||form.name.trim();
+      const response=await fetch('/api/admin/media?alt='+encodeURIComponent(alt),{method:'POST',headers:{'Content-Type':file.type},body:file,credentials:'same-origin'});
+      const result=await response.json();
+      if(!response.ok)throw new Error(result.error||'Upload failed');
+      setForm(old=>({...old,image_key:result.image_key,image_alt:alt}));
+      await load('media');setMessage('Product image uploaded. Save the product to publish the change.');
+    }catch(error){setMessage(String(error));}finally{setBusy(false);}
+  };
   const saveSiteImage=async(event:FormEvent)=>{
     event.preventDefault();setBusy(true);setMessage('');
     try{
@@ -95,6 +107,7 @@ export default function Admin() {
         <><div className="adminPanel"><h2>{editing?'Edit '+(tab==='products'?'product':'slide'):'Add '+(tab==='products'?'product':'homepage slide')}</h2><form onSubmit={save} className="adminForm">
           {tab==='products'?<>{field('name','Product name',true)}{field('slug','SEO slug (e.g. modern-sofa)',true)}{field('category','Collection/category',true)}</>:<>{field('title','Slide heading',true)}{field('accent','Highlighted heading')}{field('label','Small label')}{field('href','Button link (internal path)',true)}{field('action_label','Button label')}</>}
           <label className="adminField"><span>Description</span><textarea value={form.description} rows={4} onChange={e=>setForm(old=>({...old,description:e.target.value}))}/></label>
+          {tab==='products'&&<label className="adminField"><span>{form.image_key?'Replace product image':'Upload product image'} (JPG, PNG, WebP; max 5 MB)</span><input type="file" accept="image/jpeg,image/png,image/webp" disabled={!connected||busy} onChange={e=>{const selected=e.target.files?.[0];e.target.value='';if(selected)void uploadProductImage(selected);}}/></label>}
           <label className="adminField"><span>Choose uploaded image</span><select value={form.image_key} onChange={e=>{const selected=media.find(m=>m.object_key===e.target.value);setForm(old=>({...old,image_key:e.target.value,image_alt:String(selected?.alt||old.image_alt)}));}}><option value="">No image selected</option>{media.map(m=><option key={m.id} value={String(m.object_key)}>{String(m.alt||m.object_key)}</option>)}</select></label>
           {form.image_key&&<img className="adminSelectedImage" src={imageUrl(form.image_key)} alt={form.image_alt||'Selected image'}/>}
           {field('image_alt','Image alt text')}
