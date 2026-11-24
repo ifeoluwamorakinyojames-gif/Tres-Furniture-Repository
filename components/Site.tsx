@@ -17,7 +17,7 @@ export function Header() {
           <Link href="/search">Search</Link>
           <Link href="/gallery">Gallery</Link>
           <Link href="/about">About</Link>
-          <Link href="/showroom">Showroom</Link>
+          <Link href="/showroom">Locations</Link>
           <Link href="/contact">Contact</Link>
         </div>
       </nav>
@@ -32,7 +32,7 @@ export function Footer() {
           <Link href="/" className="footerBrand"><img src="/resources/rufes-logo.jpg" alt="RUFES Strategic Ventures logo" width="72" height="72" /><span><b>RUFES Strategic Ventures</b><small>Furniture · Décor · Fitness · Recreation</small></span></Link>
         </div>
         <div>
-          First Floor, The J's Innovations Building, Airport Road, Warri, Delta State, Nigeria
+          <div><h3>Lagos — Headquarters</h3><p>Shop I265, Road 5, Ikota Shopping Complex, Lagos, Nigeria</p><p><a href="https://www.google.com/maps/search/?api=1&query=Shop%20I265%2C%20Road%205%2C%20Ikota%20Shopping%20Complex%2C%20Lagos%2C%20Nigeria">Get directions</a></p><h3>Warri / Effurun Branch</h3><p>62 Airport Road, Effurun, near Ugboroke Junction, Delta State, Nigeria</p><p><a href="https://www.google.com/maps/search/?api=1&query=62%20Airport%20Road%2C%20Effurun%2C%20near%20Ugboroke%20Junction%2C%20Delta%20State%2C%20Nigeria">Get directions</a></p><p><a href="tel:+2348075415120">Call 08075415120</a> · <a href="https://wa.me/2348075415120">WhatsApp</a></p></div>
           <br />
           Contact the showroom to confirm product availability.
           <p className="footerLinks"><Link href="/about">About</Link> · <Link href="/services">Services</Link> · <Link href="/blog">Blog</Link> · <Link href="/gallery">Gallery</Link> · <Link href="/faqs">FAQs</Link> · <Link href="/privacy">Privacy</Link> · <Link href="/terms">Website terms</Link></p>
