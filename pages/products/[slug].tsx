@@ -27,17 +27,17 @@ export default function Product({ slug }: { slug: string }) {
   return (
     <>
       <Head>
-        <title>{p.name} in Warri, Nigeria | RUFES Strategic Ventures</title>
+        <title>{p.name} in Lagos & Warri, Nigeria | RUFES Strategic Ventures</title>
         <link rel="canonical" href={siteUrl + '/products/' + p.slug + '/'} />
         <meta property="og:type" content="product" />
-        <meta property="og:title" content={p.name + ' in Warri | RUFES'} />
+        <meta property="og:title" content={p.name + ' in Lagos and Warri | RUFES'} />
         <meta property="og:description" content={p.description} />
         <meta property="og:image" content={photos[p.kind]} />
         <meta
           name="description"
           content={
             p.description +
-            ' Enquire at RUFES Strategic Ventures, Warri, for current availability and pricing.'
+            ' Enquire at RUFES Strategic Ventures, Lagos and Warri, for current availability and pricing.'
           }
         />
         <script
@@ -55,7 +55,7 @@ export default function Product({ slug }: { slug: string }) {
           <ImageCard kind={p.kind} alt={p.name + ' illustrative photograph'} />
           <div>
             <span className="eyebrow">{p.category}</span>
-            <h1>{p.name} in Warri</h1>
+            <h1>{p.name} in Lagos and Warri</h1>
             <p>{p.description}</p>
             <div className="note">
               Catalogue preview: the image is illustrative, not a verified
@@ -75,16 +75,15 @@ export default function Product({ slug }: { slug: string }) {
         </div>
         <section style={{ marginTop: 50 }}>
           <h2>Product details and buying guidance</h2>
-          <p>{p.name} is part of the {p.category.toLowerCase()} range presented by RUFES Strategic Ventures in Warri, Delta State. The displayed photograph is an illustration, not a confirmed in-stock item. Ask our showroom for actual photographs, available models, measurements, finishes and a quotation before making a decision.</p>
+          <p>{p.name} is part of the {p.category.toLowerCase()} range presented by RUFES Strategic Ventures in Lagos and Warri, Delta State. The displayed photograph is an illustration, not a confirmed in-stock item. Ask our showroom for actual photographs, available models, measurements, finishes and a quotation before making a decision.</p>
           <h3>What should I check before ordering?</h3>
           <p>Confirm the dimensions and fit for your intended space, product materials and finish, care or operating requirements, delivery arrangements and whether installation is needed. Any technical specification must be confirmed for the exact model offered.</p>
           <h3>Where can I view related items?</h3>
-          <p><Link href={'/collections/' + p.kind}>Explore the {p.category} collection →</Link> or <Link href="/showroom">find the Warri showroom →</Link>.</p>
+          <p><Link href={'/collections/' + p.kind}>Explore the {p.category} collection →</Link> or <Link href="/showroom">find our showrooms →</Link>.</p>
           <h2>Frequently asked questions</h2>
-          <h3>Where can I enquire about {p.name.toLowerCase()} in Warri?</h3>
+          <h3>Where can I enquire about {p.name.toLowerCase()} in Lagos and Warri?</h3>
           <p>
-            Contact RUFES Strategic Ventures or visit the Airport Road showroom
-            in Warri to ask about current products.
+            Contact RUFES Strategic Ventures or visit our Lagos headquarters or Airport Road showroom in Effurun to ask about current products.
           </p>
           <h3>Is this item available now?</h3>
           <p>
