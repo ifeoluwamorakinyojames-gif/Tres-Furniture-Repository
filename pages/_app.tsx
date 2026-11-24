@@ -11,7 +11,8 @@ const business = {
   name: 'RUFES Strategic Ventures',
   url: siteUrl + '/',
   description: 'RUFES Strategic Ventures offers furniture, chandeliers, home décor, gym and playground equipment and lifestyle products in Nigeria. Head office in Lagos and showroom in Warri, Delta State.',
-  image: siteUrl + '/resources/rufes-logo.jpg',
+  logo: siteUrl + '/resources/RUFES_Strategic_Ventures_Logo.jpg',
+  image: siteUrl + '/resources/RUFES_Strategic_Ventures_Logo.jpg',
   location: [
     { '@type':'Place', name:'RUFES Head Office, Lagos', address:{'@type':'PostalAddress',addressLocality:'Lagos',addressRegion:'Lagos State',addressCountry:'NG'} },
     { '@type':'Store', name:'RUFES Warri Showroom', address:{'@type':'PostalAddress',streetAddress:"First Floor, The J's Innovations Building, Airport Road",addressLocality:'Warri',addressRegion:'Delta State',addressCountry:'NG'} },
@@ -26,7 +27,8 @@ const business = {
 export default function App({ Component, pageProps }: AppProps) {
   return <>
     <Head>
-      <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+      <link rel="icon" type="image/svg+xml" sizes="any" href="/favicon.svg" />
+      <link rel="preload" as="image" href="/resources/RUFES_Strategic_Ventures_Logo.jpg" />
       <meta name="theme-color" content="#751126" />
       <meta name="robots" content="index,follow,max-image-preview:large" />
       <meta property="og:site_name" content="RUFES Strategic Ventures" />
