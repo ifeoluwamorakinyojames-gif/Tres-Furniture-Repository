@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import { GetStaticPaths, GetStaticProps } from 'next';
@@ -11,6 +12,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => ({
   props: { slug: params?.slug },
 });
 export default function Product({ slug }: { slug: string }) {
+  const [branch,setBranch]=useState('Lagos HQ');
   const p = products.find(x => x.slug === slug)!;
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://rufes-home-and-lifestyle.pages.dev';
   const jsonLd = {
@@ -68,14 +70,15 @@ export default function Product({ slug }: { slug: string }) {
             <p>
               <strong>Availability:</strong> Please confirm
             </p>
-            <Link className="btn" href={{ pathname: '/contact', query: { product: p.name } }}>
+            <p><label>Preferred showroom <select value={branch} onChange={e=>setBranch(e.target.value)}><option>Lagos HQ</option><option>Warri / Effurun</option></select></label></p><p><a className="btn" href={'https://wa.me/2348075415120?text='+encodeURIComponent('Hello RUFES, I would like to enquire about '+p.name+' at '+branch+'. Please confirm dimensions and availability. '+siteUrl+'/products/'+p.slug+'/')}>Ask about this product on WhatsApp</a></p>
+            <Link className="btn" href={{ pathname: '/contact', query: { product: p.name, branch } }}>
               Request a quotation →
             </Link>
           </div>
         </div>
         <section style={{ marginTop: 50 }}>
           <h2>Product details and buying guidance</h2>
-          <p>{p.name} is part of the {p.category.toLowerCase()} range presented by RUFES Strategic Ventures in Lagos and Warri, Delta State. The displayed photograph is an illustration, not a confirmed in-stock item. Ask our showroom for actual photographs, available models, measurements, finishes and a quotation before making a decision.</p>
+          <p>{p.name} is part of the {p.category.toLowerCase()} range presented by RUFES Strategic Ventures in Lagos and Warri. The displayed photograph is an illustration, not a confirmed in-stock item. Ask our showroom for actual photographs, available models, measurements, finishes and a quotation before making a decision.</p>
           <h3>What should I check before ordering?</h3>
           <p>Confirm the dimensions and fit for your intended space, product materials and finish, care or operating requirements, delivery arrangements and whether installation is needed. Any technical specification must be confirmed for the exact model offered.</p>
           <h3>Where can I view related items?</h3>
