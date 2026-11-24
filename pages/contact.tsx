@@ -22,10 +22,10 @@ export default function Contact() {
   return (
     <>
       <Head>
-        <title>Contact RUFES Strategic Ventures | Warri Showroom</title>
+        <title>Contact RUFES Strategic Ventures | Lagos Headquarters &amp; Warri Branch</title>
         <meta
           name="description"
-          content="Contact RUFES Strategic Ventures in Warri about furniture, lighting, gym equipment, home décor, Christmas products and playground equipment."
+          content="Contact RUFES Strategic Ventures in Lagos and Warri about furniture, lighting, gym equipment, home décor, Christmas products and playground equipment."
         />
       </Head>
       <Header />
@@ -49,11 +49,8 @@ export default function Contact() {
         <div className="banner">
           <div>
             <h2>Visit our showroom</h2>
-            <p>First Floor, The J's Innovations Building, Airport Road, Warri, Delta State, Nigeria</p>
-            <p>
-              Official contact information and WhatsApp links will be added
-              after verification.
-            </p>
+            <div><h3>Lagos — Headquarters</h3><p>Shop I265, Road 5, Ikota Shopping Complex, Lagos, Nigeria</p><p><a href="https://www.google.com/maps/search/?api=1&query=Shop%20I265%2C%20Road%205%2C%20Ikota%20Shopping%20Complex%2C%20Lagos%2C%20Nigeria">Get directions</a></p><h3>Warri / Effurun Branch</h3><p>62 Airport Road, Effurun, near Ugboroke Junction, Delta State, Nigeria</p><p><a href="https://www.google.com/maps/search/?api=1&query=62%20Airport%20Road%2C%20Effurun%2C%20near%20Ugboroke%20Junction%2C%20Delta%20State%2C%20Nigeria">Get directions</a></p><p><a href="tel:+2348075415120">Call 08075415120</a> · <a href="https://wa.me/2348075415120">WhatsApp</a></p></div>
+            
           </div>
           <Link className="btn" href="/collections">
             Browse collections
