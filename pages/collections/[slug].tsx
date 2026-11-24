@@ -26,7 +26,7 @@ export default function Category({ slug }: { slug: string }) {
           content={
             'Explore ' +
             c.name.toLowerCase() +
-            ' in Lagos and Warri, Delta State. Browse RUFES catalogue examples and enquire about current products, prices and availability.'
+            ' in Lagos and Warri. Browse RUFES catalogue examples and enquire about current products, prices and availability.'
           }
         />
       </Head>
