@@ -12,7 +12,7 @@ async function handler(ctx:Context):Promise<Response> {
   if(denial) return denial;
   const [table,id]=getPath(ctx);
   if(!allowed.includes(table as Table)) return respond({error:'Unknown admin resource'},404);
-  if(!ctx.env.DB || !ctx.env.MEDIA) return respond({error:'Storage not configured'},503);
+  if(!ctx.env.DB) return respond({error:'Database connection unavailable'},503);
   try {
     if(ctx.request.method==='GET') {
       if(table==='media') {
@@ -23,6 +23,7 @@ async function handler(ctx:Context):Promise<Response> {
       return respond({items:result.results});
     }
     if(ctx.request.method==='POST' && table==='media') {
+      if(!ctx.env.MEDIA) return respond({error:'Image storage is not configured. Other admin features remain available.'},503);
       const type=ctx.request.headers.get('content-type') || '';
       const mime=type.split(';')[0].toLowerCase();
       const extensions:Record<string,string>={'image/jpeg':'jpg','image/png':'png','image/webp':'webp'};
