@@ -10,10 +10,11 @@ export async function requireAdmin(ctx: Ctx): Promise<Response | null> {
   const token = ctx.request.headers.get('Cf-Access-Jwt-Assertion');
   if (!token) return respond({error:'Authentication required'},401);
   try {
-    const domain = ACCESS_TEAM_DOMAIN.replace(/\/$/,'');
+    const configured = ACCESS_TEAM_DOMAIN.trim().replace(/\/$/,'');
+    const domain = configured.startsWith('https://') ? configured : 'https://' + configured;
     if (!/^https:\/\/[a-z0-9.-]+\.cloudflareaccess\.com$/i.test(domain)) return respond({error:'Invalid authentication configuration'},503);
     const jwks = createRemoteJWKSet(new URL(domain + '/cdn-cgi/access/certs'));
-    await jwtVerify(token,jwks,{issuer:domain,audience:ACCESS_AUD,algorithms:['RS256']});
+    await jwtVerify(token,jwks,{issuer:domain,audience:ACCESS_AUD.trim(),algorithms:['RS256']});
     return null;
   } catch { return respond({error:'Invalid administrator session'},403); }
 }
