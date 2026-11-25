@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { photos } from '../lib/catalog';
+import { photos, categories } from '../lib/catalog';
 
 const defaultSlides = [
   { label: 'RUFES HOME & LIFESTYLE · WARRI', title: 'Beautiful spaces.', accent: 'Inspired living.', description: 'Discover thoughtfully selected furniture and home accents for spaces that feel like yours.', image: photos.furniture, href: '/collections/furniture', action: 'Explore furniture' },
@@ -13,13 +13,22 @@ export default function HomeHeroSlider() {
   const [active, setActive] = useState(0);
   const [slides, setSlides] = useState(defaultSlides);
   useEffect(() => {
-    fetch('/api/content').then(r => r.ok ? r.json() : null).then(data => {
-      if (data?.banners?.length) setSlides(data.banners.map((b: {label:string;title:string;accent:string;description:string;image_key:string;href:string;action_label:string}) => ({label:b.label,title:b.title,accent:b.accent,description:b.description,image:b.image_key ? '/api/media/'+b.image_key : photos.decor,href:b.href,action:b.action_label})));
-    }).catch(() => {});
+    let cancelled=false;
+    Promise.all(['/api/content','/api/site-images'].map(url=>fetch(url).then(r=>r.ok?r.json():null).catch(()=>null))).then(([data,site])=>{
+      if(cancelled)return;
+      const banners=(data?.banners||[]).filter((b:any)=>b.image_key).map((b:any)=>({label:b.label,title:b.title,accent:b.accent,description:b.description,image:'/api/media/'+b.image_key,href:b.href,action:b.action_label}));
+      const products=(data?.products||[]).filter((p:any)=>p.image_key).map((p:any)=>({label:p.category,title:p.name,accent:'',description:p.description,image:'/api/media/'+p.image_key,href:'/products/'+p.slug+'/',action:'View product'}));
+      const assigned=(site?.images||[]).filter((p:any)=>p.image_key).map((p:any)=>({label:'RUFES HOME & LIFESTYLE',title:p.alt||'Explore our showroom',accent:'',description:'Discover our collections in Lagos and Warri.',image:'/api/media/'+p.image_key,href:p.slot.startsWith('category:')?'/collections/'+p.slot.split(':')[1]+'/':'/collections/',action:'Explore collection'}));
+      const collections=categories.map(p=>({label:'RUFES HOME & LIFESTYLE',title:p.name,accent:'',description:p.description,image:photos[p.slug],href:'/collections/'+p.slug+'/',action:'Explore collection'}));
+      const seen=new Set<string>();
+      setSlides([...defaultSlides.slice(0,1),...products,...banners,...assigned,...defaultSlides.slice(1),...collections].filter(s=>s.image&&!seen.has(s.image)&&!!seen.add(s.image)));
+      setActive(0);
+    });
+    return ()=>{cancelled=true;};
   }, []);
   const [paused, setPaused] = useState(false);
   useEffect(() => {
-    if (paused) return;
+    if (paused || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const timer = window.setInterval(() => setActive(current => (current + 1) % slides.length), 6500);
     return () => window.clearInterval(timer);
   }, [paused, slides.length]);
@@ -31,7 +40,7 @@ export default function HomeHeroSlider() {
   return (
     <section className="rufesSlider" aria-label="Featured RUFES collections" aria-roledescription="carousel" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)} onFocusCapture={() => setPaused(true)} onBlurCapture={event => { if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setPaused(false); }}>
       {slides.map((slide, index) => (
-        <div key={slide.href} className={'rufesSlide' + (index === active ? ' isActive' : '')} aria-hidden={index !== active} style={{ backgroundImage: 'linear-gradient(90deg,rgba(23,16,14,.88) 0%,rgba(23,16,14,.57) 49%,rgba(23,16,14,.13) 100%),url("' + slide.image + '")' }}>
+        <div key={slide.image} className={'rufesSlide' + (index === active ? ' isActive' : '')} aria-hidden={index !== active} style={{ backgroundImage: index !== active ? 'none' : 'linear-gradient(90deg,rgba(23,16,14,.88) 0%,rgba(23,16,14,.57) 49%,rgba(23,16,14,.13) 100%),url("' + slide.image + '")' }}>
           <div className="rufesSlideInner">
             <span className="showcaseKicker">{slide.label}</span>
             {index === 0 ? <h1>{slide.title}<br/><em>{slide.accent}</em></h1> : <h2>{slide.title}<br/><em>{slide.accent}</em></h2>}
@@ -46,7 +55,7 @@ export default function HomeHeroSlider() {
       <div className="rufesSliderControls">
         <button type="button" aria-label="Previous slide" onClick={() => navigate(-1)}>‹</button>
         <div className="rufesSliderDots" aria-label="Select slide">
-          {slides.map((slide, index) => <button key={slide.href} type="button" aria-label={'Show slide ' + (index + 1) + ': ' + slide.title} aria-current={index === active ? 'true' : undefined} className={index === active ? 'active' : ''} onClick={() => setActive(index)} />)}
+          {slides.map((slide, index) => Math.abs(index-active)<=2 ? <button key={slide.image} type="button" aria-label={'Show slide ' + (index + 1) + ': ' + slide.title} aria-current={index === active ? 'true' : undefined} className={index === active ? 'active' : ''} onClick={() => setActive(index)} /> : null)}
         </div>
         <button type="button" aria-label="Next slide" onClick={() => navigate(1)}>›</button>
       </div>
