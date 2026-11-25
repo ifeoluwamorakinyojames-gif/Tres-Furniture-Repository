@@ -23,7 +23,7 @@ async function handler(ctx:Context):Promise<Response> {
       return respond({items:result.results});
     }
     if(ctx.request.method==='POST' && table==='media') {
-      if(!ctx.env.MEDIA) return respond({error:'Image storage is not configured. Other admin features remain available.'},503);
+
       const type=ctx.request.headers.get('content-type') || '';
       const mime=type.split(';')[0].toLowerCase();
       const extensions:Record<string,string>={'image/jpeg':'jpg','image/png':'png','image/webp':'webp'};
@@ -36,6 +36,15 @@ async function handler(ctx:Context):Promise<Response> {
       const webp=String.fromCharCode(...head.slice(0,4))==='RIFF'&&String.fromCharCode(...head.slice(8,12))==='WEBP';
       if(!(mime==='image/jpeg'&&jpg||mime==='image/png'&&png||mime==='image/webp'&&webp)) return respond({error:'Image signature does not match format'},415);
       const key=crypto.randomUUID()+'.'+extensions[mime],mediaId=crypto.randomUUID();
+      if(!ctx.env.MEDIA){
+        if(bytes.byteLength>1500000)return respond({error:'Without R2, images must be under 1.5 MB. Please compress the image.'},413);
+        await ctx.env.DB.prepare('CREATE TABLE IF NOT EXISTS media_blobs (object_key TEXT PRIMARY KEY, data BLOB NOT NULL, mime_type TEXT NOT NULL)').run();
+        await ctx.env.DB.batch([
+          ctx.env.DB.prepare('INSERT INTO media_blobs(object_key,data,mime_type) VALUES(?,?,?)').bind(key,bytes,mime),
+          ctx.env.DB.prepare('INSERT INTO media(id,object_key,alt,mime_type,bytes) VALUES(?,?,?,?,?)').bind(mediaId,key,cleanText(new URL(ctx.request.url).searchParams.get('alt'),200),mime,bytes.byteLength)
+        ]);
+        return respond({id:mediaId,image_key:key,url:'/api/media/'+key},201);
+      }
       await ctx.env.MEDIA.put(key,bytes,{httpMetadata:{contentType:mime}});
       try {await ctx.env.DB.prepare('INSERT INTO media(id,object_key,alt,mime_type,bytes) VALUES(?,?,?,?,?)').bind(mediaId,key,cleanText(new URL(ctx.request.url).searchParams.get('alt'),200),mime,bytes.byteLength).run();}
       catch(e){await ctx.env.MEDIA.delete(key);throw e;}
