@@ -40,8 +40,9 @@ export default function HomeHeroSlider() {
   return (
     <section className="rufesSlider" aria-label="Featured RUFES collections" aria-roledescription="carousel" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)} onFocusCapture={() => setPaused(true)} onBlurCapture={event => { if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setPaused(false); }}>
       {slides.map((slide, index) => (
-        <div key={slide.image} className={'rufesSlide' + (index === active ? ' isActive' : '')} aria-hidden={index !== active} style={{ backgroundImage: index !== active ? 'none' : 'linear-gradient(90deg,rgba(23,16,14,.88) 0%,rgba(23,16,14,.57) 49%,rgba(23,16,14,.13) 100%),url("' + slide.image + '")' }}>
-          <div className="rufesSlideInner">
+        <div key={slide.image} className={'rufesSlide' + (index === active ? ' isActive' : '')} aria-hidden={index !== active} style={{ backgroundImage: 'none', backgroundColor: '#302321' }}>
+          {index === active && <img className="rufesFitImage" src={slide.image} alt={slide.title} style={{position:'absolute',inset:0,width:'100%',height:'100%',objectFit:'contain',objectPosition:'center',pointerEvents:'none'}} />}
+          <div className="rufesSlideInner" style={{position:'relative',zIndex:1,textShadow:'0 2px 8px #231614',background:'linear-gradient(90deg,rgba(35,22,20,.78),rgba(35,22,20,.38) 75%,transparent)',borderRadius:8}}> 
             <span className="showcaseKicker">{slide.label}</span>
             {index === 0 ? <h1>{slide.title}<br/><em>{slide.accent}</em></h1> : <h2>{slide.title}<br/><em>{slide.accent}</em></h2>}
             <p>{slide.description}</p>
